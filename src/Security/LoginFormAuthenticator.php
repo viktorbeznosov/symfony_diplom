@@ -16,9 +16,12 @@ use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusException;
+use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 {
+    use TargetPathTrait;
+
     /**
      * @var UserRepository
      */
@@ -126,6 +129,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
     {
-        return new RedirectResponse($this->urlGenerator->generate('app_main_page'));
+        $path = $this->getTargetPath($request->getSession(), $providerKey);
+        return new RedirectResponse($path ?: $this->urlGenerator->generate('app_main_page'));
     }
 }
