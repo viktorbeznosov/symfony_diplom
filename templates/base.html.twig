@@ -17,9 +17,11 @@
     {% block header %}
         <nav class="navbar navbar-light bg-light static-top">
             <div class="container">
-                <span class="navbar-brand">BlaBlaArticle</span>
-                <a class="js-scroll-trigger" href="#services">Сервисы</a>
-                <a class="js-scroll-trigger" href="#author">Автор</a>
+                <span class="navbar-brand"><a href="{{ path("app_landing_main") }}" class="main-page-link">BlaBlaArticle</a></span>
+                {% if main_page is defined %}
+                    <a class="js-scroll-trigger" href="#services">Сервисы</a>
+                    <a class="js-scroll-trigger" href="#author">Автор</a>
+                {% endif %}
                 <a class="btn btn-primary" href="#">Войти</a>
             </div>
         </nav>
@@ -33,7 +35,7 @@
                     <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
                         <div class="form-row">
                             <div class="col-12 col-md-6 mx-auto">
-                                <a type="submit" class="btn btn-block btn-lg btn-primary" href="try.html">Попробовать</a>
+                                <a type="submit" class="btn btn-block btn-lg btn-primary" href="{{ path("app_landing_create") }}">Попробовать</a>
                             </div>
                         </div>
                     </div>

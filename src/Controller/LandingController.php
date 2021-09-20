@@ -9,10 +9,20 @@ use Symfony\Component\Routing\Annotation\Route;
 class LandingController extends AbstractController
 {
     /**
-     * @Route("/", name="app_main_page")
+     * @Route("/", name="app_landing_main")
      */
     public function index(): Response
     {
-        return $this->render('landing/index.html.twig', []);
+        return $this->render('landing/index.html.twig', [
+            "main_page" => true
+        ]);
+    }
+
+    /**
+     * @Route("/create", name="app_landing_create")
+     */
+    public function create(): Response
+    {
+        return $this->render('landing/create.hеml.twig', []);
     }
 }
