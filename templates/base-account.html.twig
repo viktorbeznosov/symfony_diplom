@@ -18,14 +18,14 @@
     <div class="d-flex" id="wrapper">
         {% block sidebar %}
             <div class="bg-light border-right" id="sidebar-wrapper">
-                <div class="sidebar-heading"><a href="{{ path("app_account_dashboard") }}">BlaBlaArticle</a></div>
+                <div class="sidebar-heading"><a href="{{ path("app_account_dashboard") }}" class="main-page-link">BlaBlaArticle</a></div>
                 <div class="list-group list-group-flush">
-                    <a href="{{ path('app_account_dashboard') }}" class="list-group-item list-group-item-action active">Рабочий стол</a>
-                    <a href="{{ path('app_account_article_create') }}" class="list-group-item list-group-item-action bg-light">Создать статью</a>
-                    <a href="{{ path("app_account_articles_history") }}"        class="list-group-item list-group-item-action bg-light">История статей</a>
-                    <a href="{{ path("app_account_subscribe") }}"   class="list-group-item list-group-item-action bg-light">Подписка</a>
-                    <a href="{{ path("app_account_profile") }}"        class="list-group-item list-group-item-action bg-light">Профиль</a>
-                    <a href="{{ path("app_account_modules") }}"        class="list-group-item list-group-item-action bg-light">Модули генератора</a>
+                    <a href="{{ path('app_account_dashboard') }}" class="list-group-item list-group-item-action {% if app.request.attributes.get('_route') ==  'app_account_dashboard' %}active{% endif %}">Рабочий стол</a>
+                    <a href="{{ path('app_account_article_create') }}" class="list-group-item list-group-item-action  {% if app.request.attributes.get('_route') ==  'app_account_article_create' %}active{% endif %}">Создать статью</a>
+                    <a href="{{ path("app_account_articles_history") }}"        class="list-group-item list-group-item-action  {% if app.request.attributes.get('_route') ==  'app_account_articles_history' %}active{% endif %}">История статей</a>
+                    <a href="{{ path("app_account_subscribe") }}"   class="list-group-item list-group-item-action {% if app.request.attributes.get('_route') ==  'app_account_subscribe' %}active{% endif %}">Подписка</a>
+                    <a href="{{ path("app_account_profile") }}"        class="list-group-item list-group-item-action {% if app.request.attributes.get('_route') ==  'app_account_profile' %}active{% endif %}">Профиль</a>
+                    <a href="{{ path("app_account_modules") }}"        class="list-group-item list-group-item-action {% if app.request.attributes.get('_route') ==  'app_account_modules' %}active{% endif %}">Модули генератора</a>
                 </div>
             </div>
         {% endblock %}
