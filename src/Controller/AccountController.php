@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -10,6 +11,7 @@ class AccountController extends AbstractController
 {
     /**
      * @Route("/account", name="app_account_dashboard")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function index(): Response
     {
@@ -20,6 +22,7 @@ class AccountController extends AbstractController
 
     /**
      * @Route("/account/article_create", name="app_account_article_create")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function create(): Response
     {
@@ -30,6 +33,7 @@ class AccountController extends AbstractController
 
     /**
      * @Route("/account/articles_history", name="app_account_articles_history")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function history(): Response
     {
@@ -40,6 +44,7 @@ class AccountController extends AbstractController
 
     /**
      * @Route("/account/subscribe", name="app_account_subscribe")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function subscribe(): Response
     {
@@ -50,6 +55,7 @@ class AccountController extends AbstractController
 
     /**
      * @Route("/account/profile", name="app_account_profile")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function profile(): Response
     {
@@ -60,6 +66,7 @@ class AccountController extends AbstractController
 
     /**
      * @Route("/account/modules", name="app_account_modules")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function modules(): Response
     {

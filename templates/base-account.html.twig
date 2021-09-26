@@ -18,7 +18,7 @@
     <div class="d-flex" id="wrapper">
         {% block sidebar %}
             <div class="bg-light border-right" id="sidebar-wrapper">
-                <div class="sidebar-heading">BlaBlaArticle</div>
+                <div class="sidebar-heading"><a href="{{ path("app_account_dashboard") }}">BlaBlaArticle</a></div>
                 <div class="list-group list-group-flush">
                     <a href="{{ path('app_account_dashboard') }}" class="list-group-item list-group-item-action active">Рабочий стол</a>
                     <a href="{{ path('app_account_article_create') }}" class="list-group-item list-group-item-action bg-light">Создать статью</a>
@@ -43,7 +43,7 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
                             <li class="nav-item active">
-                                <a class="nav-link" href="#">Выйти</a>
+                                <a class="nav-link" href="{{ path('app_logout') }}">Выйти</a>
                             </li>
                         </ul>
                     </div>
