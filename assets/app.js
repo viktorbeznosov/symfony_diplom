@@ -15,5 +15,6 @@ require('@fortawesome/fontawesome-free/js/all.js');
 
 // start the Stimulus application
 import './bootstrap';
+import { Modal } from 'bootstrap';
 
-import './test'
+import './site'
