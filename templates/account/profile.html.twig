@@ -8,44 +8,95 @@
             <div class="row">
 
                 <div class="col-xl-6">
-                    <div class="alert alert-success" role="alert">
-                        Профиль успешно изменен
-                    </div>
+                    {% if app.session.flashBag.peek('flash_message')|length > 0 %}
+                        {% for message in app.flashes('flash_message') %}
+                            <div class="alert alert-success" role="alert">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
 
                     <div class="card my-4">
                         <div class="card-body">
-
-                            <p>Ваш API токен: asft21sfsvzxvghk1912t1g12m</p>
-                            <button class="btn btn-outline-primary">Создать новый</button>
+                            <p>Ваш API токен: <span id="api_token">{{ api_token }}</span></p>
+                            <button id="create-new-api-token" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Создать новый</button>
                         </div>
                     </div>
 
-                    <form>
+                    {{ form_start(userFrofileForm, {
+                        attr: {
+                            class: "form-signin"
+                        }
+                    }) }}
                         <div class="form-label-group">
-                            <input type="text" id="inputName" class="form-control" placeholder="Ваше имя" required value="Волков Михаил" autofocus>
-                            <label for="inputName">Ваше имя</label>
+                            {{ form_errors(userFrofileForm.firstName) }}
+                            {{ form_widget(userFrofileForm.firstName, {
+                                attr: {
+                                    placeholder: 'Ваше имя',
+                                    class: "form-control",
+                                    id: "inputName"
+                                },
+                            }) }}
+                            <label for="user_account_profile_form_firstName">Ваше имя</label>
                         </div>
                         <div class="form-label-group">
-                            <input type="email" id="inputEmail" class="form-control" placeholder="Ваш Email" required value="email@example.com">
-                            <label for="inputEmail">Ваш Email</label>
+                            {{ form_errors(userFrofileForm.email) }}
+                            {{ form_widget(userFrofileForm.email, {
+                                attr: {
+                                    placeholder: 'Ваш email',
+                                    class: "form-control",
+                                    id: "inputEmail"
+                                },
+                            }) }}
+                            <label for="user_account_profile_form_email">Ваш Email</label>
                         </div>
-
                         <div class="form-label-group">
-                            <input type="password" id="inputPassword" class="form-control" placeholder="Пароль" required>
-                            <label for="inputPassword">Пароль</label>
+                            {{ form_errors(userFrofileForm.password) }}
+                            {{ form_widget(userFrofileForm.password, {
+                                attr: {
+                                    placeholder: 'Пароль',
+                                    class: "form-control",
+                                    id: "inputPassword"
+                                },
+                            }) }}
+                            <label for="user_account_profile_form_password">Пароль</label>
                         </div>
-
                         <div class="form-label-group">
-                            <input type="password" id="inputConfirmPassword" class="form-control" placeholder="Подтверждение пароля" required>
-                            <label for="inputConfirmPassword">Подтверждение пароля</label>
+                            {{ form_errors(userFrofileForm.confirmPassword) }}
+                            {{ form_widget(userFrofileForm.confirmPassword, {
+                                attr: {
+                                    placeholder: 'Подтверждение пароля',
+                                    class: "form-control",
+                                    id: "inputConfirmPassword"
+                                },
+                            }) }}
+                            <label for="user_account_profile_form_confirmPassword">Подтверждение пароля</label>
                         </div>
 
                         <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Изменить</button>
-                    </form>
+                    {{ form_end(userFrofileForm) }}
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Создать ноавй Api токен?</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary" id="save-api-token">Сформировать</button>
+                </div>
+            </div>
+        </div>
     </div>
+
 {% endblock %}
