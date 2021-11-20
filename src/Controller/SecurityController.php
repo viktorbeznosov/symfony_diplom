@@ -1,11 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserRegistrationFormType;
 use App\Security\LoginFormAuthenticator;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,9 +22,9 @@ class SecurityController extends AbstractController
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-         if ($this->getUser()) {
-             return $this->redirectToRoute('app_account_dashboard');
-         }
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_account_dashboard');
+        }
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -43,12 +43,11 @@ class SecurityController extends AbstractController
         GuardAuthenticatorHandler $guard,
         LoginFormAuthenticator $authenticator,
         EntityManagerInterface $em
-    )
-    {
+    ) {
         $form = $this->createForm(UserRegistrationFormType::class);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             /** @var UserRegistrationFormModel $userModel */
             $userModel = $form->getData();
 
@@ -60,8 +59,7 @@ class SecurityController extends AbstractController
                 ->setIsActive(1)
                 ->setApiToken(bin2hex(random_bytes(15)))
                 ->setSubscribeType(1)
-                ->setPassword($passwordEncoder->encodePassword($user, $userModel->password))
-            ;
+                ->setPassword($passwordEncoder->encodePassword($user, $userModel->password));
 
             $em->persist($user);
             $em->flush();
@@ -70,12 +68,12 @@ class SecurityController extends AbstractController
                 $user,
                 $request,
                 $authenticator,
-                "main"
+                'main'
             );
         }
 
         return $this->render('security/register.html.twig', [
-            'registrationForm' => $form->createView()
+            'registrationForm' => $form->createView(),
         ]);
     }
 

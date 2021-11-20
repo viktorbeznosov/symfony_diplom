@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Security;
 
@@ -26,14 +27,17 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
      * @var UserRepository
      */
     private $userRepository;
+
     /**
      * @var UserPasswordEncoderInterface
      */
     private $passwordEncoder;
+
     /**
      * @var UrlGeneratorInterface
      */
     private $urlGenerator;
+
     /**
      * @var CsrfTokenManagerInterface
      */
@@ -44,8 +48,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         UserPasswordEncoderInterface $passwordEncoder,
         UrlGeneratorInterface $urlGenerator,
         CsrfTokenManagerInterface $csrfTokenManager
-    )
-    {
+    ) {
         $this->userRepository = $userRepository;
         $this->passwordEncoder = $passwordEncoder;
         $this->urlGenerator = $urlGenerator;
@@ -53,18 +56,10 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     }
 
     /**
-     * @return string
-     * Куда отправляем пользователся при неудачной авторизации
-     */
-    protected function getLoginUrl()
-    {
-        return $this->urlGenerator->generate('app_login');
-    }
-
-    /**
      * @param Request $request
+     *
      * @return bool|void
-     * Является ли текущий запрос запросом на авторизацию
+     *                   Является ли текущий запрос запросом на авторизацию
      */
     public function supports(Request $request)
     {
@@ -73,15 +68,16 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     /**
      * @param Request $request
+     *
      * @return mixed|void
-     * Возвращает данные, необходимые для авторизации
+     *                    Возвращает данные, необходимые для авторизации
      */
     public function getCredentials(Request $request)
     {
         $credentials = [
             'csrf_token' => $request->request->get('_csrf_token'),
             'email' => $request->request->get('email'),
-            'password' => $request->request->get('password')
+            'password' => $request->request->get('password'),
         ];
 
         $request->getSession()->set(
@@ -90,14 +86,14 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         );
 
         return $credentials;
-
     }
 
     /**
-     * @param mixed $credentials
+     * @param mixed                 $credentials
      * @param UserProviderInterface $userProvider
-     * @return UserInterface|void|null
-     * Возвращает пользователя
+     *
+     * @return null|UserInterface|void
+     *                                 Возвращает пользователя
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
@@ -109,7 +105,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
         $user = $this->userRepository->findOneBy(['email' => $credentials['email']]);
 
-        if ($user && !$user->getIsActive()){
+        if ($user && !$user->getIsActive()) {
             throw new CustomUserMessageAccountStatusException('User account is blocked');
         }
 
@@ -117,10 +113,11 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     }
 
     /**
-     * @param mixed $credentials
+     * @param mixed         $credentials
      * @param UserInterface $user
+     *
      * @return bool|void
-     * Проверка корректности введенных данных (email/пароль)
+     *                   Проверка корректности введенных данных (email/пароль)
      */
     public function checkCredentials($credentials, UserInterface $user)
     {
@@ -130,6 +127,16 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
     {
         $path = $this->getTargetPath($request->getSession(), $providerKey);
+
         return new RedirectResponse($path ?: $this->urlGenerator->generate('app_account_dashboard'));
+    }
+
+    /**
+     * @return string
+     *                Куда отправляем пользователся при неудачной авторизации
+     */
+    protected function getLoginUrl()
+    {
+        return $this->urlGenerator->generate('app_login');
     }
 }
