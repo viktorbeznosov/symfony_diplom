@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Servises\ThemeDBService;
+use App\Services\ArticleService;
+use App\Services\ThemeDBService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,11 +18,11 @@ class ArticleController extends AbstractController
      */
     public function create(
         Request $request,
-        ThemeDBService $themeService,
+        ArticleService $articleService,
         Security $security
     )
     {
-        $article = $themeService->createArticle($request);
+        $article = $articleService->createArticle($request);
 
         return $this->json([
             'article_id' => $article->getId(),

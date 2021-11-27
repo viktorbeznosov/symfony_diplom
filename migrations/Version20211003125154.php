@@ -25,6 +25,9 @@ final class Version20211003125154 extends AbstractMigration
         $this->addSql('CREATE TABLE theme (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, code VARCHAR(100) NOT NULL, content LONGTEXT NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE article ADD CONSTRAINT FK_23A0E6659027487 FOREIGN KEY (theme_id) REFERENCES theme (id)');
         $this->addSql('ALTER TABLE article_image ADD CONSTRAINT FK_B28A764E7294869C FOREIGN KEY (article_id) REFERENCES article (id)');
+        $this->addSql('ALTER TABLE article ADD user_id INT NOT NULL AFTER theme_id');
+        $this->addSql('ALTER TABLE article ADD CONSTRAINT FK_23A0E66A76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
+        $this->addSql('CREATE INDEX IDX_23A0E66A76ED395 ON article (user_id)');
     }
 
     public function down(Schema $schema): void
@@ -35,5 +38,8 @@ final class Version20211003125154 extends AbstractMigration
         $this->addSql('DROP TABLE article');
         $this->addSql('DROP TABLE article_image');
         $this->addSql('DROP TABLE theme');
+        $this->addSql('ALTER TABLE article DROP FOREIGN KEY FK_23A0E66A76ED395');
+        $this->addSql('DROP INDEX IDX_23A0E66A76ED395 ON article');
+        $this->addSql('ALTER TABLE article DROP user_id');
     }
 }

@@ -1,35 +1,29 @@
 <?php
-declare(strict_types=1);
 
-namespace App\Servises;
+namespace App\Services;
 
 use App\Entity\Article;
-use App\Repository\ArticleImageRepository;
-use App\Repository\ArticleRepository;
 use App\Repository\ThemeRepository;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
-use phpQuery;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
+use Doctrine\ORM\EntityManagerInterface;
+use phpQuery;
 
-class ThemeDBService implements ThemeServiceInterface
+/**
+ * Class ArticleService
+ * @package App\Services
+ */
+class ArticleService
 {
+    /**
+     * @var ThemeDBService
+     */
+    private $themeDBService;
     /**
      * @var ThemeRepository
      */
     private $themeRepository;
-
-    /**
-     * @var ArticleRepository
-     */
-    private $articleRepository;
-
-    /**
-     * @var ArticleImageRepository
-     */
-    private $articleImageRepository;
     /**
      * @var Security
      */
@@ -39,35 +33,20 @@ class ThemeDBService implements ThemeServiceInterface
      */
     private $entityManager;
 
+    /**
+     * ArticleService constructor.
+     */
     public function __construct(
+        ThemeDBService $themeDBService,
         ThemeRepository $themeRepository,
-        ArticleRepository $articleRepository,
-        ArticleImageRepository $articleImageRepository,
         EntityManagerInterface $entityManager,
         Security $security
-    ) {
+    )
+    {
+        $this->themeDBService = $themeDBService;
         $this->themeRepository = $themeRepository;
-        $this->articleRepository = $articleRepository;
-        $this->articleImageRepository = $articleImageRepository;
         $this->security = $security;
         $this->entityManager = $entityManager;
-    }
-
-    public function getThemes()
-    {
-        return $this->themeRepository->findAll();
-    }
-
-    public function getTheme($code)
-    {
-        return $this->themeRepository->findOneBy(['code' => $code]);
-    }
-
-    public function getThemeContent($code)
-    {
-        $article = $this->themeRepository->findOneBy(['code' => $code]);
-
-        return $article->getContent();
     }
 
     public function insertWords($content, $wordsArray = [])
@@ -76,9 +55,8 @@ class ThemeDBService implements ThemeServiceInterface
 
         $paragraphs = $pq->find('p');
 
-
         while (count($wordsArray) > 0) {
-            foreach ($pq->find('p') as $paragraph) {
+            foreach ($paragraphs as $paragraph) {
                 $text = explode(' ', pq($paragraph)->text());
                 $position = rand(0, count($text));
                 $word = array_pop($wordsArray);
@@ -146,7 +124,7 @@ class ThemeDBService implements ThemeServiceInterface
         }
 
         $files = $request->files->all();
-        $content = $this->insertWords($this->getThemeContent($request->request->get('theme_code')), $wordsArray);
+        $content = $this->insertWords($this->themeDBService->getThemeContent($request->request->get('theme_code')), $wordsArray);
         $content = $this->insertImages($content, $files);
 
         return [
