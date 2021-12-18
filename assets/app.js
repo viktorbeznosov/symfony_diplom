@@ -17,4 +17,6 @@ require('@fortawesome/fontawesome-free/js/all.js');
 import './bootstrap';
 import { Modal } from 'bootstrap';
 
+import 'toastr';
+
 import './site'

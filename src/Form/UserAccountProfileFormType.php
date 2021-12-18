@@ -1,8 +1,8 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Entity\User;
 use App\Form\Model\UserAccountProfileFormModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -23,8 +23,7 @@ class UserAccountProfileFormType extends AbstractType
             ])
             ->add('confirmPassword', PasswordType::class, [
                 'required' => false,
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

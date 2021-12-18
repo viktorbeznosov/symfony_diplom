@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Repository\UserRepository;
+use App\Repository\ThemeRepository;
+use App\Services\ThemeDBService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -32,10 +34,10 @@ class AccountController extends AbstractController
      * @Route("/account/article_create", name="app_account_article_create")
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function create(): Response
+    public function create(ThemeRepository $repository, ThemeDBService $themeService): Response
     {
         return $this->render('account/create.html.twig', [
-
+            'themes' => $themeService->getThemes(),
         ]);
     }
 
@@ -70,8 +72,7 @@ class AccountController extends AbstractController
         Request $request,
         UserPasswordEncoderInterface $passwordEncoder,
         EntityManagerInterface $em
-    ): Response
-    {
+    ): Response {
         $user = $security->getUser();
         /** @var UserAccountProfileFormModel $userModel */
         $userModel = new UserAccountProfileFormModel();
@@ -82,7 +83,7 @@ class AccountController extends AbstractController
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             /** @var UserAccountProfileFormModel $userModel */
             $userModel = $form->getData();
 
@@ -91,9 +92,7 @@ class AccountController extends AbstractController
             $user
                 ->setEmail($userModel->email)
                 ->setFirstName($userModel->firstName)
-                ->setPassword($password)
-            ;
-
+                ->setPassword($password);
 
             $em->persist($user);
             $em->flush();
@@ -105,7 +104,7 @@ class AccountController extends AbstractController
             'user_id' => $user->getId(),
             'api_token' => $user->getApiToken(),
             'showError' => $form->isSubmitted(),
-            'userFrofileForm' => $form->createView()
+            'userFrofileForm' => $form->createView(),
         ]);
     }
 
@@ -126,12 +125,11 @@ class AccountController extends AbstractController
     public function changeApiToken(
         Request $request,
         EntityManagerInterface $em,
-        Security $security) {
-
+        Security $security
+    ) {
         $userRepository = $em->getRepository(User::class);
 
         while ($userRepository->isExistAnotherUserByApiToken($security->getUser()->getId(), $apiToken = bin2hex(random_bytes(15)))) {
-
         }
 
         $user = $userRepository->find($security->getUser()->getId());
@@ -140,9 +138,9 @@ class AccountController extends AbstractController
         $em->persist($user);
         $em->flush();
 
-        return $this->json(array(
+        return $this->json([
             'user_id' => $security->getUser()->getId(),
-            'api_token' => $apiToken
-        ));
+            'api_token' => $apiToken,
+        ]);
     }
 }

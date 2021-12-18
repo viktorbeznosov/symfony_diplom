@@ -1,8 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -59,6 +62,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="boolean")
      */
     private $isActive;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Article::class, mappedBy="user_id", orphanRemoval=true)
+     */
+    private $articles;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Article::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $yes;
+
+    public function __construct()
+    {
+        $this->articles = new ArrayCollection();
+        $this->yes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -193,6 +212,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsActive(bool $isActive): self
     {
         $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Article[]
+     */
+    public function getArticles(): Collection
+    {
+        return $this->articles;
+    }
+
+    public function addArticle(Article $article): self
+    {
+        if (!$this->articles->contains($article)) {
+            $this->articles[] = $article;
+            $article->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArticle(Article $article): self
+    {
+        if ($this->articles->removeElement($article)) {
+            // set the owning side to null (unless already changed)
+            if ($article->getUserId() === $this) {
+                $article->setUserId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Article[]
+     */
+    public function getYes(): Collection
+    {
+        return $this->yes;
+    }
+
+    public function addYe(Article $ye): self
+    {
+        if (!$this->yes->contains($ye)) {
+            $this->yes[] = $ye;
+            $ye->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeYe(Article $ye): self
+    {
+        if ($this->yes->removeElement($ye)) {
+            // set the owning side to null (unless already changed)
+            if ($ye->getUser() === $this) {
+                $ye->setUser(null);
+            }
+        }
 
         return $this;
     }

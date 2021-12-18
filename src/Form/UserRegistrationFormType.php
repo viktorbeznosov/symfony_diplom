@@ -1,8 +1,8 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Entity\User;
 use App\Form\Model\UserRegistrationFormModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -19,14 +19,13 @@ class UserRegistrationFormType extends AbstractType
             ->add('firstName', TextType::class, ['label' => 'Ваше имя'])
             ->add('email', EmailType::class, ['label' => 'Ваш email'])
             ->add('password', PasswordType::class)
-            ->add('confirmPassword', PasswordType::class)
-        ;
+            ->add('confirmPassword', PasswordType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => UserRegistrationFormModel::class
+            'data_class' => UserRegistrationFormModel::class,
         ]);
     }
 }

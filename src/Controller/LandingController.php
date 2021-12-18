@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -14,7 +15,7 @@ class LandingController extends AbstractController
     public function index(): Response
     {
         return $this->render('landing/index.html.twig', [
-            "main_page" => true
+            'main_page' => true,
         ]);
     }
 

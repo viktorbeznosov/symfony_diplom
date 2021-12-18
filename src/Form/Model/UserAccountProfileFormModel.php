@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Form\Model;
 
@@ -12,7 +13,9 @@ class UserAccountProfileFormModel
      * @Assert\Email()
      */
     public $email;
+
     public $firstName;
+
     /**
      * @Assert\Length(min="6", minMessage="Пароль должен быть не менее 6 символов")
      */
@@ -22,10 +25,11 @@ class UserAccountProfileFormModel
 
     /**
      * @Assert\Callback()
+     *
+     * @param mixed $payload
      */
     public function validate(ExecutionContextInterface $context, $payload)
     {
-
         if ($this->confirmPassword != $this->password) {
             $context->buildViolation('Введенные пароли не совпадают!')
                 ->atPath('confirmPassword')
