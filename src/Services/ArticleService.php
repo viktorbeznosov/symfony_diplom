@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Entity\Article;
+use App\Repository\ArticleRepository;
 use App\Repository\ThemeRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
@@ -32,6 +34,10 @@ class ArticleService
      * @var EntityManagerInterface
      */
     private $entityManager;
+    /**
+     * @var ArticleRepository
+     */
+    private $articleRepository;
 
     /**
      * ArticleService constructor.
@@ -39,6 +45,7 @@ class ArticleService
     public function __construct(
         ThemeDBService $themeDBService,
         ThemeRepository $themeRepository,
+        ArticleRepository $articleRepository,
         EntityManagerInterface $entityManager,
         Security $security
     )
@@ -47,6 +54,7 @@ class ArticleService
         $this->themeRepository = $themeRepository;
         $this->security = $security;
         $this->entityManager = $entityManager;
+        $this->articleRepository = $articleRepository;
     }
 
     public function insertWords($content, $wordsArray = [])
@@ -137,13 +145,13 @@ class ArticleService
     public function createArticle(Request $request)
     {
         $articleData = $this->getArticleData($request);
-
         $article = new Article();
         $article->setUser($this->security->getUser());
 
         $theme = $this->themeRepository->findOneBy(['code' => $articleData['data']['theme_code']]);
         $article->setTheme($theme);
         $article->setTitle($articleData['data']['articte_title']);
+        $article->setDescription($articleData['data']['articte_description']);
         $article->setContent($articleData['content']);
         $article->setMinSize(intval($articleData['data']['min_size']));
         $article->setMaxSize(intval($articleData['data']['max_size']));
@@ -152,5 +160,23 @@ class ArticleService
         $this->entityManager->flush();
 
         return $article;
+    }
+
+    public function getArticlesHistory(
+        Request $request,
+        PaginatorInterface $paginator
+    )
+    {
+        $pages = intval($request->get("pages_count")) > 0 ? intval($request->get("pages_count")) : 20;
+        $pageNum = $request->request->get('page') ?? 1;
+
+        $pagination = $paginator->paginate(
+
+            $this->articleRepository->findBy(['user' => $this->security->getUser()->getId()]),
+            $request->query->getInt('page', $pageNum), /* page number */
+            $pages /* limit per page */
+        );
+
+        return $pagination;
     }
 }

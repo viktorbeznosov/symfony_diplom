@@ -56,7 +56,7 @@ class SecurityController extends AbstractController
             $user
                 ->setEmail($userModel->email)
                 ->setFirstName($userModel->firstName)
-                ->setIsActive(1)
+                ->setIsActive(true)
                 ->setApiToken(bin2hex(random_bytes(15)))
                 ->setSubscribeType(1)
                 ->setPassword($passwordEncoder->encodePassword($user, $userModel->password));

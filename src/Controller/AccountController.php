@@ -4,8 +4,10 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Repository\ThemeRepository;
+use App\Services\ArticleService;
 use App\Services\ThemeDBService;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,10 +47,16 @@ class AccountController extends AbstractController
      * @Route("/account/articles_history", name="app_account_articles_history")
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function history(): Response
+    public function history(
+        ArticleService $articleService,
+        PaginatorInterface $paginator,
+        Request $request
+    ): Response
     {
-        return $this->render('account/history.html.twig', [
+        $pagination = $articleService->getArticlesHistory($request, $paginator);
 
+        return $this->render('account/history.html.twig', [
+            'pagination' => $pagination
         ]);
     }
 
