@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Article;
+use App\Repository\ArticleRepository;
 use App\Repository\ThemeRepository;
 use App\Services\ArticleService;
 use App\Services\ThemeDBService;
@@ -58,6 +60,25 @@ class AccountController extends AbstractController
         return $this->render('account/history.html.twig', [
             'pagination' => $pagination
         ]);
+    }
+
+    /**
+     * @Route("/account/article/{id}", name="app_account_article")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @param Request $request
+     * @param ArticleService $articleService
+     * @return Response
+     */
+    public function article(
+        $id,
+        ArticleRepository $articleRepository
+    ): Response
+    {
+        $article = $articleRepository->findOneBy(['id' => $id]);
+
+        return $this->render('account/article.html.twig', array(
+            'article' => $article
+        ));
     }
 
     /**

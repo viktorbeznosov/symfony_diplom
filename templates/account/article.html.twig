@@ -1,0 +1,27 @@
+{% extends 'base-account.html.twig' %}
+
+{% block content %}
+    <div class="container-fluid">
+
+        <div class="row">
+
+            <div class="col-xl-6">
+
+                <h1 class="mt-4">{{ article.title }}</h1>
+                {{ article.content|raw }}
+
+            </div>
+
+        <hr>
+
+        <div class="row my-4">
+
+            <div class="col-xl-6">
+
+                <a href="{{ path('app_account_article_create') }}" class="btn btn-primary">Попробовать еще раз</a>
+            </div>
+
+        </div>
+
+    </div>
+{% endblock %}
