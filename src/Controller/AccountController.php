@@ -75,6 +75,9 @@ class AccountController extends AbstractController
     ): Response
     {
         $article = $articleRepository->findOneBy(['id' => $id]);
+        if (!$this->isGranted('MANAGE', $article)) {
+            throw $this->createAccessDeniedException('Доступ запрещен');
+        }
 
         return $this->render('account/article.html.twig', array(
             'article' => $article
