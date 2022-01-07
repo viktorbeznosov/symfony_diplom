@@ -3,9 +3,13 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Article;
+use App\Repository\ArticleRepository;
 use App\Repository\ThemeRepository;
+use App\Services\ArticleService;
 use App\Services\ThemeDBService;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,11 +49,39 @@ class AccountController extends AbstractController
      * @Route("/account/articles_history", name="app_account_articles_history")
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function history(): Response
+    public function history(
+        ArticleService $articleService,
+        PaginatorInterface $paginator,
+        Request $request
+    ): Response
     {
-        return $this->render('account/history.html.twig', [
+        $pagination = $articleService->getArticlesHistory($request, $paginator);
 
+        return $this->render('account/history.html.twig', [
+            'pagination' => $pagination
         ]);
+    }
+
+    /**
+     * @Route("/account/article/{id}", name="app_account_article")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @param Request $request
+     * @param ArticleService $articleService
+     * @return Response
+     */
+    public function article(
+        $id,
+        ArticleRepository $articleRepository
+    ): Response
+    {
+        $article = $articleRepository->findOneBy(['id' => $id]);
+        if (!$this->isGranted('MANAGE', $article)) {
+            throw $this->createAccessDeniedException('Доступ запрещен');
+        }
+
+        return $this->render('account/article.html.twig', array(
+            'article' => $article
+        ));
     }
 
     /**
