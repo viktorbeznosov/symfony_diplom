@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Repository\ArticleImageRepository;
 use App\Repository\ArticleRepository;
 use App\Repository\ThemeRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,10 +21,6 @@ class ThemeDBService implements ThemeServiceInterface
     private $articleRepository;
 
     /**
-     * @var ArticleImageRepository
-     */
-    private $articleImageRepository;
-    /**
      * @var Security
      */
     private $security;
@@ -37,13 +32,11 @@ class ThemeDBService implements ThemeServiceInterface
     public function __construct(
         ThemeRepository $themeRepository,
         ArticleRepository $articleRepository,
-        ArticleImageRepository $articleImageRepository,
         EntityManagerInterface $entityManager,
         Security $security
     ) {
         $this->themeRepository = $themeRepository;
         $this->articleRepository = $articleRepository;
-        $this->articleImageRepository = $articleImageRepository;
         $this->security = $security;
         $this->entityManager = $entityManager;
     }

@@ -7,6 +7,7 @@ use App\Repository\ArticleRepository;
 use App\Services\ArticleService;
 use App\Services\ThemeDBService;
 use Knp\Component\Pager\PaginatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -44,7 +45,7 @@ class ArticleController extends AbstractController
 
     /**
      * @param Request $request
-     * @Route("/account/article/create", name="app_article_create")
+     * @Route("/article/create", name="app_article_create")
      */
     public function create(
         Request $request,

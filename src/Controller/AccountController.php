@@ -7,6 +7,7 @@ use App\Entity\Article;
 use App\Repository\ArticleRepository;
 use App\Repository\ThemeRepository;
 use App\Services\ArticleService;
+use App\Services\SubscribeService;
 use App\Services\ThemeDBService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -88,10 +89,14 @@ class AccountController extends AbstractController
      * @Route("/account/subscribe", name="app_account_subscribe")
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function subscribe(): Response
+    public function subscribe(
+        SubscribeService $subscribeService
+    ): Response
     {
-        return $this->render('account/subscribe.html.twig', [
+        $allSubscribes = $subscribeService->getAllSubscribes();
 
+        return $this->render('account/subscribe.html.twig', [
+            'subscribes' => $allSubscribes
         ]);
     }
 

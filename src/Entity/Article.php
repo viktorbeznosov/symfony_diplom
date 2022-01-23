@@ -54,18 +54,13 @@ class Article
     private $content;
 
     /**
-     * @ORM\OneToMany(targetEntity=ArticleImage::class, mappedBy="article", orphanRemoval=true)
-     */
-    private $articleImages;
-
-    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $description;
 
     public function __construct()
     {
-        $this->articleImages = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -129,36 +124,6 @@ class Article
     public function setContent(string $content): self
     {
         $this->content = $content;
-
-        return $this;
-    }
-
-    /**
-     * @return ArticleImage[]|Collection
-     */
-    public function getArticleImages(): Collection
-    {
-        return $this->articleImages;
-    }
-
-    public function addArticleImage(ArticleImage $articleImage): self
-    {
-        if (!$this->articleImages->contains($articleImage)) {
-            $this->articleImages[] = $articleImage;
-            $articleImage->setArticle($this);
-        }
-
-        return $this;
-    }
-
-    public function removeArticleImage(ArticleImage $articleImage): self
-    {
-        if ($this->articleImages->removeElement($articleImage)) {
-            // set the owning side to null (unless already changed)
-            if ($articleImage->getArticle() === $this) {
-                $articleImage->setArticle(null);
-            }
-        }
 
         return $this;
     }
