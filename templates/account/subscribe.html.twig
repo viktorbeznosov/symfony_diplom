@@ -13,54 +13,39 @@
                     </div>
                     <section class="pricing py-2 row">
                         <div class="container">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="card mb-5 mb-lg-0">
-                                        <div class="card-body">
-                                            <h5 class="card-title text-muted text-uppercase text-center">Free</h5>
-                                            <h6 class="card-price text-center">$0<span class="period">/неделя</span></h6>
-                                            <hr>
-                                            <ul class="fa-ul">
-                                                <li><span class="fa-li"><i class="fas fa-check"></i></span>Возможность создать более 1 статьи</li>
-                                                <li><span class="fa-li"><i class="fas fa-check"></i></span>Базовые возможности генератора</li>
-                                                <li class="text-muted"><span class="fa-li"><i class="fas fa-times"></i></span>Продвинутые возможности генератора</li>
-                                                <li class="text-muted"><span class="fa-li"><i class="fas fa-times"></i></span>Свои модули</li>
-                                            </ul>
+                            <div class="row subscribes">
+                                {% for subscribe in subscribes %}
+                                    <div class="col-lg-4 subscribe" data-code="{{ subscribe.code }}">
+                                        <div class="card mb-5 mb-lg-0">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-muted text-uppercase text-center">{{ subscribe.code }}</h5>
+                                                <h6 class="card-price text-center">${{ subscribe.cost|number_format(0) }}<span class="period">/неделя</span></h6>
+                                                <hr>
+                                                <ul class="fa-ul">
+                                                    {% for feature in subscribe.features_array %}
+                                                        {% if(feature.enable) %}
+                                                            <li><span class="fa-li"><i class="fas fa-check"></i></span>{{ feature.title }}</li>
+                                                        {% else %}
+                                                            <li class="text-muted"><span class="fa-li"><i class="fas fa-times"></i></span>{{ feature.title }}</li>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </ul>
+                                                {% if (subscribe.current is defined) %}
+                                                    <a href="#" class="btn btn-block btn-secondary text-uppercase current" disabled>Текущий уровень</a>
+                                                {% endif %}
+                                                {% if (subscribe.can_issue is defined) %}
+                                                    <a
+                                                        href="javascript:void(0)"
+                                                        class="btn btn-block btn-primary text-uppercase can_issue"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#issueSubscribeModal"
+                                                        data-subscribe="{{ subscribe.code }}"
+                                                    >Оформить</a>
+                                                {% endif %}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="card mb-5 mb-lg-0">
-                                        <div class="card-body">
-                                            <h5 class="card-title text-uppercase text-center current text-warning"><i class="fas fa-check"></i> Plus</h5>
-                                            <h6 class="card-price text-center">$9<span class="period">/неделя</span></h6>
-                                            <hr>
-                                            <ul class="fa-ul">
-                                                <li><span class="fa-li"><i class="fas fa-check"></i></span>Возможность создать более 1 статьи</li>
-                                                <li><span class="fa-li"><i class="fas fa-check"></i></span>Базовые возможности генератора</li>
-                                                <li><span class="fa-li"><i class="fas fa-check"></i></span>Продвинутые возможности генератора</li>
-                                                <li class="text-muted"><span class="fa-li"><i class="fas fa-times"></i></span>Свои модули</li>
-                                            </ul>
-                                            <a href="#" class="btn btn-block btn-secondary text-uppercase" disabled>Текущий уровень</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h5 class="card-title text-muted text-uppercase text-center">Pro</h5>
-                                            <h6 class="card-price text-center">$49<span class="period">/неделя</span></h6>
-                                            <hr>
-                                            <ul class="fa-ul">
-                                                <li><span class="fa-li"><i class="fas fa-check"></i></span><strong>Безлимитная генерация статей для вашего аккаунта</strong></li>
-                                                <li><span class="fa-li"><i class="fas fa-check"></i></span>Базовые возможности генератора</li>
-                                                <li><span class="fa-li"><i class="fas fa-check"></i></span>Продвинутые возможности генератора</li>
-                                                <li><span class="fa-li"><i class="fas fa-check"></i></span>Свои модули</li>
-                                            </ul>
-                                            <a href="#" class="btn btn-block btn-primary text-uppercase">Оформить</a>
-                                        </div>
-                                    </div>
-                                </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </section>
@@ -70,5 +55,24 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="issueSubscribeModal" tabindex="-1" role="dialog" aria-labelledby="issueSubscribeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="issueSubscribeModalLabel">Оформление подписки</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Оформить новую подписку?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary" id="issue-subscribe">Оформить</button>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

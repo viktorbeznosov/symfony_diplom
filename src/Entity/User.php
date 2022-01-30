@@ -54,9 +54,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $apiToken;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity=Subscribe::class)
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $subscribeType;
+    private $subscribe;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $subscribe_issued_till;
 
     /**
      * @ORM\Column(type="boolean")
@@ -192,18 +198,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getSubscribeType(): ?int
-    {
-        return $this->subscribeType;
-    }
-
-    public function setSubscribeType(int $subscribeType): self
-    {
-        $this->subscribeType = $subscribeType;
-
-        return $this;
-    }
-
     public function getIsActive(): ?bool
     {
         return $this->isActive;
@@ -275,4 +269,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getSubscribe(): ?Subscribe
+    {
+        return $this->subscribe;
+    }
+
+    public function setSubscribe(?Subscribe $subscribe): self
+    {
+        $this->subscribe = $subscribe;
+
+        return $this;
+    }
+
+    public function getSubscribeIssuedTill(): ?\DateTimeInterface
+    {
+        return $this->subscribe_issued_till;
+    }
+
+    public function setSubscribeIssuedTill(?\DateTimeInterface $subscribe_issued_till): self
+    {
+        $this->subscribe_issued_till = $subscribe_issued_till;
+
+        return $this;
+    }
+
 }

@@ -146,16 +146,68 @@ $(document).ready(function () {
             contentType: false,
             processData: false,
             dataType : 'json',
-            url: "/account/article/create",
+            url: "/article/create",
             data: formData,
             success: function (result) {
-                console.log(result)
+                console.log(result);
                 $('.article-content').html('');
                 $('.article-content').html(result.content);
                 $('#articleCreateForm').remove();
             },
         });
     });
+
+    /**
+     * Subscribe Page
+     */
+
+    $('a[data-bs-target="#issueSubscribeModal"]').on('click', function () {
+        let subscribe = $(this).data('subscribe');
+        $('#issueSubscribeModal').attr('data-subscribe', subscribe);
+    });
+
+    $('#issue-subscribe').on('click', function () {
+        let subscribe = $(this).closest('#issueSubscribeModal').attr('data-subscribe');
+        console.log(subscribe);
+
+        $.ajax({
+            url: '/subscribe/issue',
+            method: 'post',
+            dataType: 'json',
+            data: {
+                subscribe: subscribe
+            },
+            success: function(result){
+                let subscribes = $('.subscribe');
+                for (let i = 0; i < subscribes.length; i++) {
+                    $(subscribes[i]).find('.can_issue').remove();
+                    $(subscribes[i]).find('.current').remove();
+
+                    console.log(result[i]);
+                    let subscribe_code = $(subscribes[i]).data('code');
+                    let current_tpl = '<a href="#" class="btn btn-block btn-secondary text-uppercase current" disabled="">Текущий уровень</a>';
+                    let can_issue_tpl = '<a href="javascript:void(0)" class="btn btn-block btn-primary text-uppercase can_issue" data-bs-toggle="modal" data-bs-target="#issueSubscribeModal" data-subscribe="'+subscribe_code+'">Оформить</a>'
+
+                    if (result[i].current) {
+                        $(subscribes[i]).find('.card-body').append(current_tpl);
+                    }
+                    if (result[i].can_issue) {
+                        $(subscribes[i]).find('.card-body').append(can_issue_tpl);
+
+                        $('a[data-bs-target="#issueSubscribeModal"]').on('click', function () {
+                            let subscribe = $(this).data('subscribe');
+                            $('#issueSubscribeModal').attr('data-subscribe', subscribe);
+                        });
+                    }
+                }
+                $('#issueSubscribeModal').find('button[data-bs-dismiss="modal"]').trigger('click');
+            }
+        });
+
+
+    });
+
+    //==================================================================================================================
 
     /**
      * Custom Inpup File
