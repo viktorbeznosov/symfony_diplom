@@ -146,15 +146,21 @@ class ArticleService
     {
         $articleData = $this->getArticleData($request);
         $article = new Article();
+
         $article->setUser($this->security->getUser());
+        $articleToken = $this->security->getUser() ? null : bin2hex(random_bytes(15));
+        $article->setToken($articleToken);
+
+        $articleDescription = isset($articleData['data']['articte_description']) ? $articleData['data']['articte_description'] : "";
+        $articleMaxSize = isset($articleData['data']['max_size']) ? intval($articleData['data']['max_size']) : 1;
 
         $theme = $this->themeRepository->findOneBy(['code' => $articleData['data']['theme_code']]);
         $article->setTheme($theme);
         $article->setTitle($articleData['data']['articte_title']);
-        $article->setDescription($articleData['data']['articte_description']);
+        $article->setDescription($articleDescription);
         $article->setContent($articleData['content']);
         $article->setMinSize(intval($articleData['data']['min_size']));
-        $article->setMaxSize(intval($articleData['data']['max_size']));
+        $article->setMaxSize($articleMaxSize);
 
         $this->entityManager->persist($article);
         $this->entityManager->flush();
@@ -178,5 +184,12 @@ class ArticleService
         );
 
         return $pagination;
+    }
+
+    public function getArticleByToken(string $token)
+    {
+        $article = $this->articleRepository->findOneBy(['token' =>  $token]);
+
+        return $article;
     }
 }

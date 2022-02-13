@@ -97,6 +97,36 @@ $(document).ready(function () {
         $()
     }
 
+    $('#landingArticleCreateForm').on('submit', function (event) {
+        var error = false;
+
+        event.preventDefault();
+        var data = $(this).serializeArray();
+
+        var formData = new FormData();
+
+        data.forEach(function (item) {
+            formData.append(item.name, item.value);
+        });
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType : 'json',
+            url: "/article/create",
+            data: formData,
+            success: function (result) {
+                console.log(result);
+                $('.article_content').html('');
+                $('.article_content').html(result.content);
+                $('#landingArticleCreateForm').remove();
+            },
+        });
+
+    });
+
     $('#articleCreateForm').on('submit', function (event) {
         // toastr.success('Have fun storming the castle!', 'Miracle Max Says');
         // is-invalid
@@ -168,7 +198,6 @@ $(document).ready(function () {
 
     $('#issue-subscribe').on('click', function () {
         let subscribe = $(this).closest('#issueSubscribeModal').attr('data-subscribe');
-        console.log(subscribe);
 
         $.ajax({
             url: '/subscribe/issue',

@@ -9,7 +9,9 @@ use App\Services\ThemeDBService;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
@@ -53,11 +55,16 @@ class ArticleController extends AbstractController
         Security $security
     )
     {
-        $article = $articleService->createArticle($request);
+        $article = ($request->cookies->get('article_token')) ? $articleService->getArticleByToken($request->cookies->get('article_token')) : $articleService->createArticle($request);
 
-        return $this->json([
+        $response = new Response();
+        $response->headers->setCookie(Cookie::create('article_token', $article->getToken()));
+        $content = json_encode([
             'article_id' => $article->getId(),
             'content' => $article->getContent()
         ]);
+        $response->setContent($content);
+        $response->send();
+
     }
 }
