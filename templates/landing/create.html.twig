@@ -14,7 +14,7 @@
                         Чтобы создать статью по настоящему <a href="{{ path("app_register") }}">Зарегистрируйтесь</a>
                     </div>
 
-                    {% if (app.request.cookies.get('article_token') == false and app.user is null) %}
+                    {% if ((article_token is null) and (app.user is null)) %}
                     <form class="form-signin" id="landingArticleCreateForm">
                         <div class="form-label-group">
                             <input type="text" id="articleTitle" name="articte_title" class="form-control" placeholder="Заголовок статьи" required autofocus value="Тестовая статья">

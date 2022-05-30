@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use App\Entity\Article;
+use App\Entity\User;
 use App\Repository\ArticleRepository;
 use App\Repository\ThemeRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
 use Doctrine\ORM\EntityManagerInterface;
 use phpQuery;
@@ -186,10 +188,31 @@ class ArticleService
         return $pagination;
     }
 
+    public function getArticleToken(): ?string
+    {
+        return Request::createFromGlobals()->cookies->get('article_token');
+    }
+
     public function getArticleByToken(string $token)
     {
         $article = $this->articleRepository->findOneBy(['token' =>  $token]);
 
         return $article;
+    }
+
+    public function bindDemoArticleToUser(User $user)
+    {
+        $articleToken = $this->getArticleToken();
+        $demoArticle = $this->getArticleByToken($articleToken);
+        if ($demoArticle) {
+            $demoArticle->setUser($user);
+            $demoArticle->setToken(null);
+            $this->entityManager->persist($demoArticle);
+            $this->entityManager->flush();
+
+            $response = new Response();
+            $response->headers->clearCookie('article_token', '/', null);
+            $response->sendHeaders();
+        }
     }
 }

@@ -10,6 +10,7 @@ use App\Security\LoginFormAuthenticator;
 use App\Services\ArticleService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -68,15 +69,9 @@ class SecurityController extends AbstractController
 
             $em->persist($user);
 
-            if ($request->cookies->get('article_token')) {
-                $article = $articleService->getArticleByToken($request->cookies->get('article_token'));
-                $article->setUser($user);
-                $em->persist($article);
-
-                unset($_COOKIE['article_token']);
-                setcookie('article_token', '', -1, '/');
+            if ($articleService->getArticleToken()) {
+                $articleService->bindDemoArticleToUser($user);
             }
-
 
             $em->flush();
 

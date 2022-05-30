@@ -29,12 +29,13 @@ class LandingController extends AbstractController
         ArticleService $articleService
     ): Response
     {
-        if ($request->cookies->get('article_token')) {
+        if ($articleService->getArticleToken()) {
             $article = $articleService->getArticleByToken($request->cookies->get('article_token'));
         }
 
         return $this->render('landing/create.html.twig', [
-            'article' => isset($article) ? $article : null
+            'article' => isset($article) ? $article : null,
+            'article_token' => $articleService->getArticleToken()
         ]);
     }
 }

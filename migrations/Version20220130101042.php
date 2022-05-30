@@ -21,11 +21,13 @@ final class Version20220130101042 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE article ADD token VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE article CHANGE user_id user_id INT DEFAULT NULL');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE article DROP token');
+        $this->addSql('ALTER TABLE article CHANGE user_id user_id INT NOT NULL');
     }
 }
