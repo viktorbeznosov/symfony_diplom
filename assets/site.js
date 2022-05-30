@@ -118,9 +118,9 @@ $(document).ready(function () {
             url: "/article/create",
             data: formData,
             success: function (result) {
-                console.log(result);
+                var content = '<h2 class="card-title text-center mb-4">'+ result.title +'</h2>' + result.content;
                 $('.article_content').html('');
-                $('.article_content').html(result.content);
+                $('.article_content').html(content);
                 $('#landingArticleCreateForm').remove();
             },
         });

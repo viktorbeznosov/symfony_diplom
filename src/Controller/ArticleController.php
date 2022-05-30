@@ -61,6 +61,7 @@ class ArticleController extends AbstractController
         $response->headers->setCookie(Cookie::create('article_token', $article->getToken()));
         $content = json_encode([
             'article_id' => $article->getId(),
+            'title' => $article->getTitle(),
             'content' => $article->getContent()
         ]);
         $response->setContent($content);
