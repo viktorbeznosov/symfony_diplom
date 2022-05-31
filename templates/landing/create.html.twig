@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Main Page{% endblock %}
+
+{% block content %}
+    <section>
+        <div class="container my-5">
+            <div class="row">
+                <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+
+                    <h2 class="card-title text-center mb-4">Создание статьи</h2>
+
+                    <div class="alert alert-info" role="alert">
+                        Чтобы создать статью по настоящему <a href="{{ path("app_register") }}">Зарегистрируйтесь</a>
+                    </div>
+
+                    {% if ((article_token is null) and (app.user is null)) %}
+                    <form class="form-signin" id="landingArticleCreateForm">
+                        <div class="form-label-group">
+                            <input type="text" id="articleTitle" name="articte_title" class="form-control" placeholder="Заголовок статьи" required autofocus value="Тестовая статья">
+                            <label for="articleTitle">Заголовок статьи</label>
+                        </div>
+                        <div class="form-label-group">
+                            <input type="text" id="articleWord" name="article_word" class="form-control" placeholder="Продвигаемое слово" required>
+                            <label for="articleWord">Продвигаемое слово</label>
+                        </div>
+
+                        <input type="hidden" name="theme_code" id="themeCode" class="form-control" value="test">
+                        <input type="hidden" name="min_size" id="minSize" class="form-control" value="1">
+                        <input type="hidden" name="description" value=" ">
+
+                        <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Попробовать</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr>
+
+    <section>
+        <div class="container my-5 article_content">
+            {% if article.title is defined %}
+                <h2 class="card-title text-center mb-4">{{ article.title }}</h2>
+            {% endif %}
+
+            {% if article.title is defined %}
+                 {{ article.content|raw }}
+            {% endif %}
+        </div>
+    </section>
+
+
+    <section class="call-to-action text-white text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-9 mx-auto">
+                    <h2 class="mb-4">Готовы начать? Регистрируйтесь прямо сейчас!</h2>
+                </div>
+                <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
+                    <div class="form-row">
+                        <div class="col-12 col-md-6 mx-auto">
+                            <a href="{{ path('app_register') }}" class="btn btn-block btn-lg btn-primary">Регистрация</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

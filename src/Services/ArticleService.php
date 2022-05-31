@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use App\Entity\Article;
+use App\Entity\User;
 use App\Repository\ArticleRepository;
 use App\Repository\ThemeRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
 use Doctrine\ORM\EntityManagerInterface;
 use phpQuery;
@@ -146,15 +148,21 @@ class ArticleService
     {
         $articleData = $this->getArticleData($request);
         $article = new Article();
+
         $article->setUser($this->security->getUser());
+        $articleToken = $this->security->getUser() ? null : bin2hex(random_bytes(15));
+        $article->setToken($articleToken);
+
+        $articleDescription = isset($articleData['data']['articte_description']) ? $articleData['data']['articte_description'] : "";
+        $articleMaxSize = isset($articleData['data']['max_size']) ? intval($articleData['data']['max_size']) : 1;
 
         $theme = $this->themeRepository->findOneBy(['code' => $articleData['data']['theme_code']]);
         $article->setTheme($theme);
         $article->setTitle($articleData['data']['articte_title']);
-        $article->setDescription($articleData['data']['articte_description']);
+        $article->setDescription($articleDescription);
         $article->setContent($articleData['content']);
         $article->setMinSize(intval($articleData['data']['min_size']));
-        $article->setMaxSize(intval($articleData['data']['max_size']));
+        $article->setMaxSize($articleMaxSize);
 
         $this->entityManager->persist($article);
         $this->entityManager->flush();
@@ -178,5 +186,33 @@ class ArticleService
         );
 
         return $pagination;
+    }
+
+    public function getArticleToken(): ?string
+    {
+        return Request::createFromGlobals()->cookies->get('article_token');
+    }
+
+    public function getArticleByToken(string $token)
+    {
+        $article = $this->articleRepository->findOneBy(['token' =>  $token]);
+
+        return $article;
+    }
+
+    public function bindDemoArticleToUser(User $user)
+    {
+        $articleToken = $this->getArticleToken();
+        $demoArticle = $this->getArticleByToken($articleToken);
+        if ($demoArticle) {
+            $demoArticle->setUser($user);
+            $demoArticle->setToken(null);
+            $this->entityManager->persist($demoArticle);
+            $this->entityManager->flush();
+
+            $response = new Response();
+            $response->headers->clearCookie('article_token', '/', null);
+            $response->sendHeaders();
+        }
     }
 }
