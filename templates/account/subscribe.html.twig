@@ -8,8 +8,11 @@
             <div class="row">
 
                 <div class="col-xl-8">
-                    <div class="alert alert-success" role="alert">
-                        Подписка Plus оформлена, до 01.01.1970
+                    <div class="alert alert-success user-subscribe" role="alert">
+                        Подписка {{ app.user.subscribe.code | upper }}
+                        {% if app.user.subscribe.code != 'free' %}
+                            оформлена до {{ app.user.subscribeIssuedTill | date('d.m.Y')}}
+                        {% endif %}
                     </div>
                     <section class="pricing py-2 row">
                         <div class="container">

@@ -207,20 +207,23 @@ $(document).ready(function () {
                 subscribe: subscribe
             },
             success: function(result){
+                let subscribe_notify = "Подписка " + result.subscribe_code;
+                let subscribe_issued_till = (result.subscribe_issued_till) ? " оформлена, до " +result.subscribe_issued_till : '';
+                $('.user-subscribe').html(subscribe_notify + subscribe_issued_till);
+
                 let subscribes = $('.subscribe');
                 for (let i = 0; i < subscribes.length; i++) {
                     $(subscribes[i]).find('.can_issue').remove();
                     $(subscribes[i]).find('.current').remove();
 
-                    console.log(result[i]);
                     let subscribe_code = $(subscribes[i]).data('code');
                     let current_tpl = '<a href="#" class="btn btn-block btn-secondary text-uppercase current" disabled="">Текущий уровень</a>';
                     let can_issue_tpl = '<a href="javascript:void(0)" class="btn btn-block btn-primary text-uppercase can_issue" data-bs-toggle="modal" data-bs-target="#issueSubscribeModal" data-subscribe="'+subscribe_code+'">Оформить</a>'
 
-                    if (result[i].current) {
+                    if (result.subscribes[i].current) {
                         $(subscribes[i]).find('.card-body').append(current_tpl);
                     }
-                    if (result[i].can_issue) {
+                    if (result.subscribes[i].can_issue) {
                         $(subscribes[i]).find('.card-body').append(can_issue_tpl);
 
                         $('a[data-bs-target="#issueSubscribeModal"]').on('click', function () {

@@ -5,6 +5,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -46,5 +47,18 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->setParameter('val', $apiToken)
             ->getQuery()
             ->getResult());
+    }
+
+    public function getUserQuery(int $userId)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.id = :id')
+            ->leftJoin('u.subscribe', 's')
+            ->addSelect('s')
+//            ->leftJoin(\App\Entity\Article::class, 'a', Expr\Join::WITH, 'a.user = u.id')
+//            ->addSelect('a')
+            ->setParameter('id', $userId)
+            ->getQuery()
+        ;
     }
 }

@@ -16,6 +16,7 @@
     "fzaninotto/faker": "^1.9",
     "gedmo/doctrine-extensions": "^3.1",
     "knplabs/knp-paginator-bundle": "^5.8",
+    "nesbot/carbon": "^2.58",
     "phpmd/phpmd": "^2.8",
     "sensio/framework-extra-bundle": "^6.2",
     "squizlabs/php_codesniffer": "^3.5",

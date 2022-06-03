@@ -5,6 +5,9 @@
     "composer/package-versions-deprecated": {
         "version": "1.11.99.4"
     },
+    "composer/pcre": {
+        "version": "1.0.1"
+    },
     "composer/semver": {
         "version": "3.2.6"
     },
@@ -141,6 +144,9 @@
     },
     "monolog/monolog": {
         "version": "2.3.4"
+    },
+    "nesbot/carbon": {
+        "version": "2.58.0"
     },
     "nikic/php-parser": {
         "version": "v4.12.0"

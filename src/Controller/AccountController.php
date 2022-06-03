@@ -90,7 +90,8 @@ class AccountController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function subscribe(
-        SubscribeService $subscribeService
+        SubscribeService $subscribeService,
+        Security $security
     ): Response
     {
         $allSubscribes = $subscribeService->getAllSubscribes();
