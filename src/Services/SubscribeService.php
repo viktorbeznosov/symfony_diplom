@@ -9,12 +9,8 @@ use App\Repository\ArticleRepository;
 use App\Repository\SubscribeRepository;
 use App\Repository\UserRepository;
 use Carbon\Carbon;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\env;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
 
 class SubscribeService
@@ -39,10 +35,6 @@ class SubscribeService
      * @var ContainerBagInterface
      */
     private $params;
-    /**
-     * @var ArticleRepository
-     */
-    private $articleRepository;
 
     /**
      * SubscribeService constructor.
@@ -51,7 +43,6 @@ class SubscribeService
     public function __construct(
         UserRepository $userRepository,
         SubscribeRepository $subscribeRepository,
-        ArticleRepository $articleRepository,
         EntityManagerInterface $entityManager,
         Security $security,
         ContainerBagInterface $params
@@ -62,7 +53,6 @@ class SubscribeService
         $this->userRepository = $userRepository;
         $this->entityManager = $entityManager;
         $this->params = $params;
-        $this->articleRepository = $articleRepository;
     }
 
     /**
