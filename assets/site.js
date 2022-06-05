@@ -209,7 +209,7 @@ $(document).ready(function () {
                  * Улучшение подписки на Dashboard
                  */
                 $('.user-subscribe-code').html(result.subscribe_code);
-                $('.user-subscribe-expire-time').html(result.subscribe_expires_till_string).removeClass('.alert-success').addClass('alert-warning');
+                $('.user-subscribe-expire-time').html(result.subscribe_expires_till_string).removeClass('alert-success').removeClass('alert-danger').addClass('alert-warning');
                 if (result.next_subscribe_code) {
                     $('.update-user-subscribe').attr('data-subscribe', result.next_subscribe_code);
                 } else {
@@ -221,15 +221,15 @@ $(document).ready(function () {
                  */
                 let subscribe_notify = "Подписка " + result.subscribe_code;
                 let subscribe_issued_till = (result.subscribe_issued_till) ? " оформлена, до " +result.subscribe_issued_till : '';
-                $('.user-subscribe').html(subscribe_notify + subscribe_issued_till);
+                $('.user-subscribe').html(subscribe_notify + subscribe_issued_till).removeClass('alert-danger').addClass('alert-success');
 
                 let subscribes = $('.subscribe');
                 for (let i = 0; i < subscribes.length; i++) {
                     $(subscribes[i]).find('.can_issue').remove();
-                    $(subscribes[i]).find('.current').remove();
+                    $(subscribes[i]).find('.subscribe-current').remove();
 
                     let subscribe_code = $(subscribes[i]).data('code');
-                    let current_tpl = '<a href="#" class="btn btn-block btn-secondary text-uppercase current" disabled="">Текущий уровень</a>';
+                    let current_tpl = '<a href="#" class="btn btn-block btn-secondary text-uppercase subscribe-current" disabled="">Текущий уровень</a>';
                     let can_issue_tpl = '<a href="javascript:void(0)" class="btn btn-block btn-primary text-uppercase can_issue" data-bs-toggle="modal" data-bs-target="#issueSubscribeModal" data-subscribe="'+subscribe_code+'">Оформить</a>'
 
                     if (result.subscribes[i].current) {
@@ -247,9 +247,26 @@ $(document).ready(function () {
                 $('#issueSubscribeModal').find('button[data-bs-dismiss="modal"]').trigger('click');
             }
         });
-
-
     });
+
+    $('#prolongate-subscribe').on('click', function () {
+        $.ajax({
+            url: '/subscribe/prolongate',
+            method: 'post',
+            dataType: 'json',
+            success: function(result){
+                toastr.success('Подписка продлена');
+
+                let subscribe_notify = "Подписка " + result.subscribe_code;
+                let subscribe_issued_till = (result.subscribe_issued_till) ? " оформлена, до " +result.subscribe_issued_till : '';
+                $('.user-subscribe').html(subscribe_notify + subscribe_issued_till).removeClass('alert-danger').addClass('alert-success');
+                $('.subscribe-current').removeClass('btn-warning').addClass('btn-secondary').html('Текущий уровень');
+
+                $('#prolongateSubscribeModal').find('button[data-bs-dismiss="modal"]').trigger('click');
+            }
+        });
+    });
+
 
     //==================================================================================================================
 

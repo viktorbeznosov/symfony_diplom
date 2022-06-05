@@ -4,16 +4,22 @@
     <div id="page-content-wrapper">
 
         <div class="container-fluid">
-            <h1 class="mt-4">Подписка</h1>
+            <h1 class="mt-4">Подписка {{ subscribe_is_expired }}</h1>
             <div class="row">
 
                 <div class="col-xl-8">
-                    <div class="alert alert-success user-subscribe" role="alert">
-                        Подписка {{ app.user.subscribe.code | upper }}
-                        {% if app.user.subscribe.code != 'free' %}
-                            оформлена до {{ app.user.subscribeIssuedTill | date('d.m.Y')}}
-                        {% endif %}
-                    </div>
+                    {% if subscribe_is_expired %}
+                        <div class="alert alert-danger user-subscribe" role="alert">
+                            Подписка истекла
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success user-subscribe" role="alert">
+                            Подписка {{ app.user.subscribe.code | upper }}
+                            {% if app.user.subscribe.code != 'free' %}
+                                оформлена до {{ app.user.subscribeIssuedTill | date('d.m.Y')}}
+                            {% endif %}
+                        </div>
+                    {% endif %}
                     <section class="pricing py-2 row">
                         <div class="container">
                             <div class="row subscribes">
@@ -34,7 +40,19 @@
                                                     {% endfor %}
                                                 </ul>
                                                 {% if (subscribe.current is defined) %}
-                                                    <a href="#" class="btn btn-block btn-secondary text-uppercase current" disabled>Текущий уровень</a>
+                                                    {% if subscribe_is_expired %}
+                                                        <a
+                                                            href="javascript:void(0)"
+                                                            class="btn btn-block btn-warning text-uppercase subscribe-current"
+                                                            disabled
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#prolongateSubscribeModal"
+                                                        >
+                                                            Продлить подписку
+                                                        </a>
+                                                    {% else %}
+                                                        <a href="javascript:void(0)" class="btn btn-block btn-secondary text-uppercase subscribe-current" disabled>Текущий уровень</a>
+                                                    {% endif %}
                                                 {% endif %}
                                                 {% if (subscribe.can_issue is defined) %}
                                                     <a
@@ -74,6 +92,26 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
                     <button type="button" class="btn btn-primary" id="issue-subscribe">Оформить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="prolongateSubscribeModal" tabindex="-1" role="dialog" aria-labelledby="prolongateSubscribeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="issueSubscribeModalLabel">Продление подписки</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Продлить текущую подписку?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary" id="prolongate-subscribe">Продлить</button>
                 </div>
             </div>
         </div>

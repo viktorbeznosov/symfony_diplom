@@ -17,6 +17,20 @@ class SubscribeController extends AbstractController
      */
     public function issue(Request $request, SubscribeService $subscribeService, Security $security)
     {
-        return $this->json($subscribeService->subscribeIssue($security->getUser()->getId(), $request->request->get('subscribe')));
+        return $this->json($subscribeService->userSubscribeIssue($security->getUser(), $request->request->get('subscribe')));
+    }
+
+    /**
+     * @param Request $request
+     * @param SubscribeService $subscribeService
+     * @param Security $security
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @Route("/subscribe/prolongate", name="app_subscribe_prolongate")
+     */
+    public function prolongate(Request $request, SubscribeService $subscribeService, Security $security)
+    {
+        return $this->json($subscribeService->userSubscribeProlongate($security->getUser()));
     }
 }

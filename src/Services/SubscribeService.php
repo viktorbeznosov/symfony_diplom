@@ -86,17 +86,13 @@ class SubscribeService
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function subscribeIssue($userId, $subscribeCode)
+    public function userSubscribeIssue($user, $subscribeCode)
     {
-        $user = $this->userRepository->find($userId);
+
         $subscribe = $this->subscribeRepository->findOneBy(['code' => $subscribeCode]);
-        $subscribeIssuedTill = ($subscribeCode != 'free') ? Carbon::now()->modify("+ {$this->params->get('subscribe.period')} days") : null;
 
         $user->setSubscribe($subscribe);
-        $user->setSubscribeIssuedTill($subscribeIssuedTill);
-
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        $user = $this->subscribeProlongate($user);
 
         return array(
             'subscribes' => $this->getAllSubscribes(),
@@ -108,13 +104,57 @@ class SubscribeService
     }
 
     /**
+     * @param User $user
+     * @return array
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    public function userSubscribeProlongate(User $user)
+    {
+        $user = $this->subscribeProlongate($user);
+
+        return array(
+            'subscribe_code' => strtoupper($user->getSubscribe()->getCode()),
+            'subscribe_issued_till' => Carbon::create($user->getSubscribeIssuedTill())->format('d.m.Y'),
+        );
+    }
+
+    /**
+     * @param User $user
+     * @return User
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    public function subscribeProlongate(User $user)
+    {
+        $subscribeIssuedTill = $this->getSubscribeIssuedTill($user->getSubscribe());
+        $user->setSubscribeIssuedTill($subscribeIssuedTill);
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        return $user;
+    }
+
+    /**
+     * @param Subscribe $subscribe
+     * @return Carbon|null
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    private function getSubscribeIssuedTill(Subscribe $subscribe)
+    {
+        return ($subscribe->getCode() != 'free') ? Carbon::now()->modify("+ {$this->params->get('subscribe.period')} days") : null;
+    }
+
+    /**
      * @about проверяет, истекла ли подписка
      * @param User $user
      * @return bool
      */
     public function userSubscribeIsExpired(User $user): bool
     {
-        return Carbon::create($user->getSubscribeIssuedTill()) < Carbon::now();
+        return $user->getSubscribe()->getCode()!= 'free' && Carbon::create($user->getSubscribeIssuedTill()) < Carbon::now();
     }
 
     /**
