@@ -32,13 +32,11 @@ $(document).ready(function () {
 
     $('#articleTitle').val($('#fieldTheme').find('option:selected').text());
 
-    // console.log( $("#fieldTheme option[value='test']").data('content'));
     $('#articleTitle').val($("#fieldTheme option[value='test']").text());
     $('#atricleTitleContent').text($("#fieldTheme option[value='test']").text())
     $('.article-content').html($("#fieldTheme option[value='test']").data('content'));
 
     $('#fieldTheme').on('change', function () {
-        console.log($(this).val());
         $('#articleTitle').val($(this).find('option:selected').text());
         $('#atricleTitleContent').text($(this).find('option:selected').text());
         $('.article-content').html($(this).find('option:selected').data('content'));
@@ -179,7 +177,6 @@ $(document).ready(function () {
             url: "/article/create",
             data: formData,
             success: function (result) {
-                console.log(result);
                 $('.article-content').html('');
                 $('.article-content').html(result.content);
                 $('#articleCreateForm').remove();
@@ -188,11 +185,11 @@ $(document).ready(function () {
     });
 
     /**
-     * Subscribe Page
+     * Subscribe Page & Dashboard update subscribe
      */
 
     $('a[data-bs-target="#issueSubscribeModal"]').on('click', function () {
-        let subscribe = $(this).data('subscribe');
+        let subscribe = $(this).attr('data-subscribe');
         $('#issueSubscribeModal').attr('data-subscribe', subscribe);
     });
 
@@ -207,6 +204,21 @@ $(document).ready(function () {
                 subscribe: subscribe
             },
             success: function(result){
+                toastr.success('Подписка улучшена до ' + result.subscribe_code);
+                /**
+                 * Улучшение подписки на Dashboard
+                 */
+                $('.user-subscribe-code').html(result.subscribe_code);
+                $('.user-subscribe-expire-time').html(result.subscribe_expires_till_string).removeClass('.alert-success').addClass('alert-warning');
+                if (result.next_subscribe_code) {
+                    $('.update-user-subscribe').attr('data-subscribe', result.next_subscribe_code);
+                } else {
+                    $('.update-user-subscribe').hide();
+                }
+
+                /**
+                 * Subscribe Page
+                 */
                 let subscribe_notify = "Подписка " + result.subscribe_code;
                 let subscribe_issued_till = (result.subscribe_issued_till) ? " оформлена, до " +result.subscribe_issued_till : '';
                 $('.user-subscribe').html(subscribe_notify + subscribe_issued_till);

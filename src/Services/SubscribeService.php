@@ -2,10 +2,9 @@
 
 namespace App\Services;
 
-
+use App\Entity\Subscribe;
 use App\Entity\User;
 use App\Helpers\TimeHelper;
-use App\Repository\ArticleRepository;
 use App\Repository\SubscribeRepository;
 use App\Repository\UserRepository;
 use Carbon\Carbon;
@@ -38,7 +37,11 @@ class SubscribeService
 
     /**
      * SubscribeService constructor.
+     * @param UserRepository $userRepository
      * @param SubscribeRepository $subscribeRepository
+     * @param EntityManagerInterface $entityManager
+     * @param Security $security
+     * @param ContainerBagInterface $params
      */
     public function __construct(
         UserRepository $userRepository,
@@ -79,7 +82,9 @@ class SubscribeService
      * @about Оформление подписки
      * @param $userId
      * @param $subscribeCode
-     * @return \App\Entity\Subscribe[]
+     * @return array
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function subscribeIssue($userId, $subscribeCode)
     {
@@ -96,8 +101,20 @@ class SubscribeService
         return array(
             'subscribes' => $this->getAllSubscribes(),
             'subscribe_code' => strtoupper($user->getSubscribe()->getCode()),
-            'subscribe_issued_till' => Carbon::create($user->getSubscribeIssuedTill())->format('d.m.Y')
+            'subscribe_issued_till' => Carbon::create($user->getSubscribeIssuedTill())->format('d.m.Y'),
+            'subscribe_expires_till_string' => $this->getUserSubscribeExpiresAfterString($user),
+            'next_subscribe_code' => $this->getNextSubscribe($user) ? $this->getNextSubscribe($user)->getCode() : null
         );
+    }
+
+    /**
+     * @about проверяет, истекла ли подписка
+     * @param User $user
+     * @return bool
+     */
+    public function userSubscribeIsExpired(User $user): bool
+    {
+        return Carbon::create($user->getSubscribeIssuedTill()) < Carbon::now();
     }
 
     /**
@@ -105,12 +122,28 @@ class SubscribeService
      * @param User $user
      * @return string
      */
-    public function getUserSubscribeExpiresAfterString(User $user): string
+    public function getUserSubscribeExpiresAfterString(User $user): ?string
     {
+        if (empty($user->getSubscribeIssuedTill())) {
+            return null;
+        }
+        if ($this->userSubscribeIsExpired($user)) {
+            return 'Подписка истекла';
+        }
         $dateDiff = Carbon::create($user->getSubscribeIssuedTill())->diff(Carbon::now());
         $dateDiffStrring = TimeHelper::getDateIntervalString($dateDiff);
-        $result = 'Подписка истекает через  ' . $dateDiffStrring;
+        $result = 'Подписка истекает через ' . $dateDiffStrring;
 
         return $result;
+    }
+
+    /**
+     * @about Возвращает следуюущую подписку
+     * @param User $user
+     * @return Subscribe|null
+     */
+    public function getNextSubscribe(User $user): ?Subscribe
+    {
+        return $this->subscribeRepository->getNextSubscribe($user->getSubscribe());
     }
 }

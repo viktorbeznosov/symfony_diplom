@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Entity\Article;
 use App\Repository\ArticleRepository;
+use App\Repository\SubscribeRepository;
 use App\Repository\ThemeRepository;
 use App\Services\ArticleService;
 use App\Services\SubscribeService;
@@ -28,10 +29,18 @@ class AccountController extends AbstractController
      * @Route("/account", name="app_account_dashboard")
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function index(): Response
+    public function index(
+        Security $security,
+        SubscribeService $subscribeService,
+        ArticleService $articleService
+    ): Response
     {
         return $this->render('account/index.html.twig', [
-
+            'subscribe_expires_till_string' => $subscribeService->getUserSubscribeExpiresAfterString($security->getUser()),
+            'subscribe_is_expired' => $subscribeService->userSubscribeIsExpired($security->getUser()),
+            'user_articles' => $articleService->getUserArticles($security->getUser()),
+            'user_last_month_articles' => $articleService->getUserArticlesByLastMonth($security->getUser()),
+            'subscribe_code' => $subscribeService->getNextSubscribe($security->getUser()) ? $subscribeService->getNextSubscribe($security->getUser())->getCode() : null
         ]);
     }
 

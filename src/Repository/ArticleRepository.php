@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Article;
+use Carbon\Carbon;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -20,12 +21,31 @@ class ArticleRepository extends ServiceEntityRepository
         parent::__construct($registry, Article::class);
     }
 
-    public function getUserArticles(int $userId)
+    private function getUserArticlesQuery(int $userId)
     {
         return $this->createQueryBuilder('a')
             ->where('a.user = :user_id')
             ->setParameter('user_id', $userId)
-            ->getQuery()
         ;
+    }
+
+    public function getUserArticles(int $userId)
+    {
+        $query = $this->getUserArticlesQuery($userId);
+
+        return $query->getQuery()->getArrayResult();
+    }
+
+    public function getUserArticlesByPeriod(int $userId, Carbon $from, Carbon $to)
+    {
+        $query = $this->getUserArticlesQuery($userId);
+        $query
+            ->andWhere('a.created_at >= :from')
+            ->setParameter('from', $from)
+            ->andWhere('a.created_at <= :to')
+            ->setParameter('to', $to)
+        ;
+
+        return $query->getQuery()->getArrayResult();
     }
 }
