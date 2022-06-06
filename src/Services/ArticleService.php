@@ -6,6 +6,7 @@ use App\Entity\Article;
 use App\Entity\User;
 use App\Repository\ArticleRepository;
 use App\Repository\ThemeRepository;
+use Carbon\Carbon;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -163,6 +164,7 @@ class ArticleService
         $article->setContent($articleData['content']);
         $article->setMinSize(intval($articleData['data']['min_size']));
         $article->setMaxSize($articleMaxSize);
+        $article->setCreatedAt(Carbon::now());
 
         $this->entityManager->persist($article);
         $this->entityManager->flush();
@@ -214,5 +216,15 @@ class ArticleService
             $response->headers->clearCookie('article_token', '/', null);
             $response->sendHeaders();
         }
+    }
+
+    public function getUserArticles(User $user)
+    {
+        return $this->articleRepository->getUserArticles($user->getId());
+    }
+
+    public function getUserArticlesByLastMonth(User $user)
+    {
+        return $this->articleRepository->getUserArticlesByPeriod($user->getId(), Carbon::now()->modify('-1 month'), Carbon::now());
     }
 }

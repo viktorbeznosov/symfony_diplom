@@ -19,32 +19,25 @@ class SubscribeRepository extends ServiceEntityRepository
         parent::__construct($registry, Subscribe::class);
     }
 
-    // /**
-    //  * @return Subscribe[] Returns an array of Subscribe objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getNextSubscribe(Subscribe $subscribe)
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
+        $subQuery = $this->createQueryBuilder('s')
+            ->select('s')
+            ->where('s.code = :code')
+            ->setParameter('code', $subscribe->getCode())
             ->getQuery()
-            ->getResult()
+            ->getSingleResult()
         ;
-    }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Subscribe
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
+        $query = $this->createQueryBuilder('s')
+            ->where('s.id > :id')
+            ->setParameter('id', $subQuery->getId())
             ->getQuery()
-            ->getOneOrNullResult()
+            ->setMaxResults(1)
         ;
+
+        return count($query->getResult()) > 0 ? $query->getSingleResult() : null;
+
     }
-    */
+
 }

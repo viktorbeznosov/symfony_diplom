@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Article;
+use Carbon\Carbon;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -20,32 +21,31 @@ class ArticleRepository extends ServiceEntityRepository
         parent::__construct($registry, Article::class);
     }
 
-    // /**
-    //  * @return Article[] Returns an array of Article objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    private function getUserArticlesQuery(int $userId)
     {
         return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
+            ->where('a.user = :user_id')
+            ->setParameter('user_id', $userId)
         ;
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Article
+    public function getUserArticles(int $userId)
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $query = $this->getUserArticlesQuery($userId);
+
+        return $query->getQuery()->getArrayResult();
     }
-    */
+
+    public function getUserArticlesByPeriod(int $userId, Carbon $from, Carbon $to)
+    {
+        $query = $this->getUserArticlesQuery($userId);
+        $query
+            ->andWhere('a.created_at >= :from')
+            ->setParameter('from', $from)
+            ->andWhere('a.created_at <= :to')
+            ->setParameter('to', $to)
+        ;
+
+        return $query->getQuery()->getArrayResult();
+    }
 }
