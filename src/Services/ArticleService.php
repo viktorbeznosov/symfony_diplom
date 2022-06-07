@@ -19,7 +19,7 @@ use phpQuery;
  * Class ArticleService
  * @package App\Services
  */
-class ArticleService
+class ArticleService implements ArticleServiceInterface
 {
     /**
      * @var ThemeDBService
@@ -114,8 +114,9 @@ class ArticleService
         return $pq->html();
     }
 
-    public function getArticleData(Request $request)
+    public function getArticleData($request)
     {
+        /** @var Request $request */
         $data = $request->request->all();
 
         $wordsArray = [];
@@ -145,8 +146,9 @@ class ArticleService
         ];
     }
 
-    public function createArticle(Request $request)
+    public function createArticle($request)
     {
+        /** @var Request $request */
         $articleData = $this->getArticleData($request);
         $article = new Article();
 
