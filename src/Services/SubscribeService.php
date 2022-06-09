@@ -88,7 +88,6 @@ class SubscribeService
      */
     public function userSubscribeIssue($user, $subscribeCode)
     {
-
         $subscribe = $this->subscribeRepository->findOneBy(['code' => $subscribeCode]);
 
         $user->setSubscribe($subscribe);

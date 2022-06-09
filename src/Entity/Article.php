@@ -7,6 +7,7 @@ use App\Repository\ArticleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ArticleRepository::class)
@@ -22,6 +23,7 @@ class Article
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("article_api")
      */
     private $title;
 
@@ -50,11 +52,13 @@ class Article
 
     /**
      * @ORM\Column(type="text")
+     * @Groups("article_api")
      */
     private $content;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups("article_api")
      */
     private $description;
 

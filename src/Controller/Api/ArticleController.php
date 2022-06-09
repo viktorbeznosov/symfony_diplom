@@ -23,10 +23,6 @@ class ArticleController extends BaseApiController
             return $this->json(['message' => 'Api token not found']);
         }
 
-        $data = json_decode($request->getContent());
-
-        print_r($articleService->getTheme($data->theme));die();
-
-        return $this->json($data);
+        return $this->json($articleService->createArticle($request), 200, [], ['groups' => 'article_api']);
     }
 }

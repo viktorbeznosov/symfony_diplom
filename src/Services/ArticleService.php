@@ -19,7 +19,7 @@ use phpQuery;
  * Class ArticleService
  * @package App\Services
  */
-class ArticleService implements ArticleServiceInterface
+class ArticleService extends AbstractArticleService
 {
     /**
      * @var ThemeDBService
@@ -60,28 +60,6 @@ class ArticleService implements ArticleServiceInterface
         $this->articleRepository = $articleRepository;
     }
 
-    public function insertWords($content, $wordsArray = [])
-    {
-        $pq = phpQuery::newDocument($content);
-
-        $paragraphs = $pq->find('p');
-
-        while (count($wordsArray) > 0) {
-            foreach ($paragraphs as $paragraph) {
-                $text = explode(' ', pq($paragraph)->text());
-                $position = rand(0, count($text));
-                $word = array_pop($wordsArray);
-                array_splice($text, $position, 0, $word);
-                $str = implode(' ', $text);
-                pq($paragraph)->text('');
-                pq($paragraph)->text($str);
-            }
-        }
-
-
-        return $pq->html();
-    }
-
     public function insertImages($content, $files = [])
     {
         $imdSources = array();
@@ -114,9 +92,8 @@ class ArticleService implements ArticleServiceInterface
         return $pq->html();
     }
 
-    public function getArticleData($request)
+    public function getArticleData(Request $request)
     {
-        /** @var Request $request */
         $data = $request->request->all();
 
         $wordsArray = [];
@@ -146,9 +123,8 @@ class ArticleService implements ArticleServiceInterface
         ];
     }
 
-    public function createArticle($request)
+    public function createArticle(Request $request)
     {
-        /** @var Request $request */
         $articleData = $this->getArticleData($request);
         $article = new Article();
 
