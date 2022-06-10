@@ -89,9 +89,9 @@ class AccountController extends AbstractController
             throw $this->createAccessDeniedException('Доступ запрещен');
         }
 
-        return $this->render('account/article.html.twig', array(
+        return $this->render('account/article.html.twig', [
             'article' => $article
-        ));
+        ]);
     }
 
     /**

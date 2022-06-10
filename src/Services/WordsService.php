@@ -2,18 +2,10 @@
 
 namespace App\Services;
 
-
-use Symfony\Component\HttpFoundation\Request;
 use phpQuery;
 
-abstract class AbstractArticleService
+class WordsService
 {
-    abstract public function insertImages($content, $files = []);
-
-    abstract public function getArticleData(Request $request);
-
-    abstract public function createArticle(Request $request);
-
     public function insertWords($content, $wordsArray = [])
     {
         $pq = phpQuery::newDocument($content);

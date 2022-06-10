@@ -3,14 +3,13 @@
 namespace App\Services;
 
 use App\Entity\Article;
-use App\Helpers\JsonHelper;
 use App\Repository\ArticleRepository;
 use Carbon\Carbon;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use phpQuery;
 
-class ApiArticleService extends AbstractArticleService
+class ApiArticleService
 {
 
     /**
@@ -29,6 +28,10 @@ class ApiArticleService extends AbstractArticleService
      * @var UserService
      */
     private $userService;
+    /**
+     * @var WordsService
+     */
+    private $wordsService;
 
     /**
      * ApiArticleService constructor.
@@ -40,13 +43,20 @@ class ApiArticleService extends AbstractArticleService
         ThemeDBService $themeDBService,
         ArticleRepository $articleRepository,
         EntityManagerInterface $entityManager,
-        UserService $userService
+        UserService $userService,
+        WordsService $wordsService
     )
     {
         $this->themeDBService = $themeDBService;
         $this->articleRepository = $articleRepository;
         $this->entityManager = $entityManager;
         $this->userService = $userService;
+        $this->wordsService = $wordsService;
+    }
+
+    public function insertWords($content, $wordsArray = [])
+    {
+        return $this->wordsService->insertWords($content, $wordsArray);
     }
 
     public function insertImages($content, $links = [])
@@ -72,20 +82,13 @@ class ApiArticleService extends AbstractArticleService
 
     public function getArticleData(Request $request)
     {
-        if (!JsonHelper::jsonIsValid($request->getContent())) {
-            return array(
-                'error' => 1,
-                'message' => 'Json is invalid'
-            );
-        }
-
         $data = json_decode($request->getContent());
 
         if (empty($data->theme) || empty($this->themeDBService->getTheme($data->theme))) {
-            return array(
+            return [
                 'error' => 1,
                 'message' => 'Theme not found'
-            );
+            ];
         }
 
         $theme = $this->themeDBService->getTheme($data->theme);

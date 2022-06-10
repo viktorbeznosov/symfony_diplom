@@ -19,7 +19,7 @@ use phpQuery;
  * Class ArticleService
  * @package App\Services
  */
-class ArticleService extends AbstractArticleService
+class ArticleService
 {
     /**
      * @var ThemeDBService
@@ -41,6 +41,10 @@ class ArticleService extends AbstractArticleService
      * @var ArticleRepository
      */
     private $articleRepository;
+    /**
+     * @var WordsService
+     */
+    private $wordsService;
 
     /**
      * ArticleService constructor.
@@ -50,7 +54,8 @@ class ArticleService extends AbstractArticleService
         ThemeRepository $themeRepository,
         ArticleRepository $articleRepository,
         EntityManagerInterface $entityManager,
-        Security $security
+        Security $security,
+        WordsService $wordsService
     )
     {
         $this->themeDBService = $themeDBService;
@@ -58,6 +63,12 @@ class ArticleService extends AbstractArticleService
         $this->security = $security;
         $this->entityManager = $entityManager;
         $this->articleRepository = $articleRepository;
+        $this->wordsService = $wordsService;
+    }
+
+    public function insertWords($content, $wordsArray = [])
+    {
+        return $this->wordsService->insertWords($content, $wordsArray);
     }
 
     public function insertImages($content, $files = [])
@@ -87,7 +98,6 @@ class ArticleService extends AbstractArticleService
                 pq($mediaBlocks)->eq(rand(1, count($mediaBlocks) - 1))->append('<img class="mr-3" src="' . $imdSource . '" width="250" height="250" alt="">');
             }
         }
-
 
         return $pq->html();
     }
