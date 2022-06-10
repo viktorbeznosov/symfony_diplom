@@ -5,23 +5,18 @@ namespace App\Security;
 use App\Services\UserService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
-use Symfony\Component\Security\Core\Exception\UserNotFoundException;
-use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
-use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
-use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
-use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
-class ApiTokenAuthenticator extends AbstractAuthenticator
+class ApiTokenAuthenticator extends AbstractGuardAuthenticator
 {
     /**
      * @var UserService
      */
     private $userService;
-
 
     /**
      * ApiTokenAuthenticator constructor.
@@ -35,45 +30,45 @@ class ApiTokenAuthenticator extends AbstractAuthenticator
         $this->userService = $userService;
     }
 
-    public function supports(Request $request): ?bool
+    public function supports(Request $request)
     {
         return $request->headers->has('Authorization') && 0 === strpos($request->headers->get('Authorization'), 'Bearer');
     }
 
-    public function authenticate(Request $request): PassportInterface
+    public function getCredentials(Request $request)
     {
-        $apiToken = substr($request->headers->get('Authorization'), 7);
-        if (null === $apiToken) {
-            // The token header was empty, authentication fails with HTTP Status
-            // Code 401 "Unauthorized"
-            throw new CustomUserMessageAuthenticationException('No API token provided');
-        }
-
-        $user = $this->userService->getUserByApiToken($apiToken);
-
-        if (null === $user) {
-            throw new UserNotFoundException();
-        }
-
-        return new SelfValidatingPassport(new UserBadge($user->getEmail()));
+        return substr($request->headers->get('Authorization'), 7);
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
+    public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        return null;
+        return $this->userService->getUserByApiToken($credentials);
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
+    public function checkCredentials($credentials, UserInterface $user)
     {
-        $data = [
-            // you may want to customize or obfuscate the message first
-            'message' => strtr($exception->getMessageKey(), $exception->getMessageData())
-
-            // or to translate this message
-            // $this->translator->trans($exception->getMessageKey(), $exception->getMessageData())
-        ];
-
-        return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
+        return true;
     }
 
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    {
+        return new JsonResponse(array(
+            'message' => $exception->getMessage()
+        ), 401);
+    }
+
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
+    {
+        // TODO: Implement onAuthenticationSuccess() method.
+    }
+
+    public function supportsRememberMe()
+    {
+        return false;
+    }
+
+    public function start(Request $request, AuthenticationException $authException = null)
+    {
+        throw new \Exception('Never Called');
+    }
 }

@@ -3,10 +3,15 @@
 namespace App\Controller\Api;
 
 use App\Services\ApiArticleService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ArticleController extends BaseApiController
+/**
+ * @IsGranted("IS_AUTHENTICATED_FULLY")
+ */
+class ArticleController extends AbstractController
 {
     /**
      * @Route("/api/v1/artice-create", methods={"PUT"}, name="api_article_create")
@@ -19,10 +24,6 @@ class ArticleController extends BaseApiController
         ApiArticleService $articleService
     )
     {
-        if ($this->tokenNotFound($request)) {
-            return $this->json(['message' => 'Api token not found']);
-        }
-
         return $this->json($articleService->createArticle($request), 200, [], ['groups' => 'article_api']);
     }
 }
