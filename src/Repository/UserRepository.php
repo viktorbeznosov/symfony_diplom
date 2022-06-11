@@ -55,10 +55,18 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->where('u.id = :id')
             ->leftJoin('u.subscribe', 's')
             ->addSelect('s')
-//            ->leftJoin(\App\Entity\Article::class, 'a', Expr\Join::WITH, 'a.user = u.id')
-//            ->addSelect('a')
             ->setParameter('id', $userId)
             ->getQuery()
         ;
+    }
+
+    public function getUserByApiToken($apiToken): ?User
+    {
+        $query = $this->createQueryBuilder('u')
+            ->where('u.apiToken = :apiToken')
+            ->setParameter('apiToken', $apiToken)
+            ->getQuery();
+
+        return (count($query->getResult()) > 0) ? $query->getSingleResult() : null;
     }
 }

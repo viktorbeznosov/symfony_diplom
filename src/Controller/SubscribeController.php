@@ -4,10 +4,11 @@ namespace App\Controller;
 
 use App\Services\SubscribeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class SubscribeController extends AbstractController
 {
@@ -17,7 +18,7 @@ class SubscribeController extends AbstractController
      */
     public function issue(Request $request, SubscribeService $subscribeService, Security $security)
     {
-        return $this->json($subscribeService->userSubscribeIssue($security->getUser(), $request->request->get('subscribe')));
+        return new JsonResponse($subscribeService->userSubscribeIssue($security->getUser(), $request->request->get('subscribe')));
     }
 
     /**

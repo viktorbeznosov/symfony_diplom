@@ -88,19 +88,18 @@ class SubscribeService
      */
     public function userSubscribeIssue($user, $subscribeCode)
     {
-
         $subscribe = $this->subscribeRepository->findOneBy(['code' => $subscribeCode]);
 
         $user->setSubscribe($subscribe);
         $user = $this->subscribeProlongate($user);
 
-        return array(
+        return [
             'subscribes' => $this->getAllSubscribes(),
             'subscribe_code' => strtoupper($user->getSubscribe()->getCode()),
             'subscribe_issued_till' => Carbon::create($user->getSubscribeIssuedTill())->format('d.m.Y'),
             'subscribe_expires_till_string' => $this->getUserSubscribeExpiresAfterString($user),
             'next_subscribe_code' => $this->getNextSubscribe($user) ? $this->getNextSubscribe($user)->getCode() : null
-        );
+        ];
     }
 
     /**
@@ -113,10 +112,10 @@ class SubscribeService
     {
         $user = $this->subscribeProlongate($user);
 
-        return array(
+        return [
             'subscribe_code' => strtoupper($user->getSubscribe()->getCode()),
             'subscribe_issued_till' => Carbon::create($user->getSubscribeIssuedTill())->format('d.m.Y'),
-        );
+        ];
     }
 
     /**

@@ -6,6 +6,7 @@ use App\Repository\SubscribeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=SubscribeRepository::class)
@@ -21,16 +22,19 @@ class Subscribe
 
     /**
      * @ORM\Column(type="string", unique=true, length=255)
+     * @Groups("user")
      */
     private $title;
 
     /**
      * @ORM\Column(type="string", unique=true, length=50)
+     * @Groups("user")
      */
     private $code;
 
     /**
      * @ORM\Column(type="decimal", precision=8, scale=2, nullable=true)
+     * @Groups("user")
      */
     private $cost;
 

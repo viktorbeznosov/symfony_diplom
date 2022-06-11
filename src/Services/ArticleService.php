@@ -41,6 +41,10 @@ class ArticleService
      * @var ArticleRepository
      */
     private $articleRepository;
+    /**
+     * @var WordsService
+     */
+    private $wordsService;
 
     /**
      * ArticleService constructor.
@@ -50,7 +54,8 @@ class ArticleService
         ThemeRepository $themeRepository,
         ArticleRepository $articleRepository,
         EntityManagerInterface $entityManager,
-        Security $security
+        Security $security,
+        WordsService $wordsService
     )
     {
         $this->themeDBService = $themeDBService;
@@ -58,28 +63,12 @@ class ArticleService
         $this->security = $security;
         $this->entityManager = $entityManager;
         $this->articleRepository = $articleRepository;
+        $this->wordsService = $wordsService;
     }
 
     public function insertWords($content, $wordsArray = [])
     {
-        $pq = phpQuery::newDocument($content);
-
-        $paragraphs = $pq->find('p');
-
-        while (count($wordsArray) > 0) {
-            foreach ($paragraphs as $paragraph) {
-                $text = explode(' ', pq($paragraph)->text());
-                $position = rand(0, count($text));
-                $word = array_pop($wordsArray);
-                array_splice($text, $position, 0, $word);
-                $str = implode(' ', $text);
-                pq($paragraph)->text('');
-                pq($paragraph)->text($str);
-            }
-        }
-
-
-        return $pq->html();
+        return $this->wordsService->insertWords($content, $wordsArray);
     }
 
     public function insertImages($content, $files = [])
@@ -109,7 +98,6 @@ class ArticleService
                 pq($mediaBlocks)->eq(rand(1, count($mediaBlocks) - 1))->append('<img class="mr-3" src="' . $imdSource . '" width="250" height="250" alt="">');
             }
         }
-
 
         return $pq->html();
     }
