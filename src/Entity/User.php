@@ -77,6 +77,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=Article::class, mappedBy="user", orphanRemoval=true)
+     * @Groups("user")
      */
     private $articles;
 
@@ -85,10 +86,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $yes;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Module::class, mappedBy="user")
+     * @Groups("user")
+     */
+    private $modules;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
         $this->yes = new ArrayCollection();
+        $this->modules = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -296,6 +304,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setSubscribeIssuedTill(?\DateTimeInterface $subscribe_issued_till): self
     {
         $this->subscribe_issued_till = $subscribe_issued_till;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Module>
+     */
+    public function getModules(): Collection
+    {
+        return $this->modules;
+    }
+
+    public function addModule(Module $module): self
+    {
+        if (!$this->modules->contains($module)) {
+            $this->modules[] = $module;
+            $module->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeModule(Module $module): self
+    {
+        if ($this->modules->removeElement($module)) {
+            // set the owning side to null (unless already changed)
+            if ($module->getUser() === $this) {
+                $module->setUser(null);
+            }
+        }
 
         return $this;
     }
