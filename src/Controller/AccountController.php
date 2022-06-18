@@ -8,6 +8,7 @@ use App\Repository\ArticleRepository;
 use App\Repository\SubscribeRepository;
 use App\Repository\ThemeRepository;
 use App\Services\ArticleService;
+use App\Services\ModuleService;
 use App\Services\SubscribeService;
 use App\Services\ThemeDBService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -160,10 +161,22 @@ class AccountController extends AbstractController
      * @Route("/account/modules", name="app_account_modules")
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function modules(): Response
+    public function modules(
+        Request $request,
+        ModuleService $moduleService,
+        PaginatorInterface $paginator
+    ): Response
     {
-        return $this->render('account/modules.html.twig', [
+        $pages = intval($request->get("pages_count")) > 0 ? intval($request->get("pages_count")) : 5;
 
+        $pagination = $paginator->paginate(
+            $moduleService->getUserModules($this->getUser()),
+            $request->query->getInt('page', 1), /* page number */
+            $pages /* limit per page */
+        );
+
+        return $this->render('account/modules.html.twig', [
+            'pagination' => $pagination
         ]);
     }
 

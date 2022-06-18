@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Module;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -47,10 +48,9 @@ class ModuleRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return Module[] Returns an array of Module objects
-    //  */
-    /*
+     /**
+      * @return Module[] Returns an array of Module objects
+      */
     public function findByExampleField($value)
     {
         return $this->createQueryBuilder('m')
@@ -62,9 +62,7 @@ class ModuleRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-    */
 
-    /*
     public function findOneBySomeField($value): ?Module
     {
         return $this->createQueryBuilder('m')
@@ -74,5 +72,14 @@ class ModuleRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
-    */
+
+    public function getUserModules($userId): ?array
+    {
+        return $this->createQueryBuilder('m')
+            ->where('m.user = :user_id')
+            ->setParameter('user_id', $userId)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

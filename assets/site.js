@@ -267,6 +267,15 @@ $(document).ready(function () {
         });
     });
 
+    /**
+     * Modules Page
+     */
+
+    $('.module-delete-btn').on('click', function () {
+        let module_id = $(this).attr('data-module_id');
+        $('#moduleDeleteInput').val(module_id);
+    });
+
 
     //==================================================================================================================
 

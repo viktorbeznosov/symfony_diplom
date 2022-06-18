@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ModuleRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ModuleRepository::class)
@@ -18,16 +19,13 @@ class Module
     private $id;
 
     /**
+     * @Assert\NotBlank(message="Название модуля не должно быть пустым")
      * @ORM\Column(type="string", length=255)
      */
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $code;
-
-    /**
+     * @Assert\NotBlank(message="Заполните контент модуля")
      * @ORM\Column(type="string", length=255)
      */
     private $content;
@@ -51,18 +49,6 @@ class Module
     public function setTitle(string $title): self
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    public function getCode(): ?string
-    {
-        return $this->code;
-    }
-
-    public function setCode(string $code): self
-    {
-        $this->code = $code;
 
         return $this;
     }
