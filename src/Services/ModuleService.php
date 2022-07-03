@@ -7,7 +7,6 @@ use App\Entity\User;
 use App\Repository\ModuleRepository;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -26,6 +25,18 @@ class ModuleService
      */
     private $security;
 
+    private const WORDCASE = [
+        0 => 'article_word_nominative_case',
+        1 => 'article_word_genitive_case',
+        2 => 'article_word_dative_case',
+        3 => 'article_word_accusative_case',
+        4 => 'article_word_creative_case',
+        5 => 'article_word_prepositional_case',
+        6 => 'article_word_plural'
+    ];
+
+    private const PARAGRAPH = 'Lorem Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+
     /**
      * ModuleService constructor.
      * @param ModuleRepository $moduleRepository
@@ -41,6 +52,12 @@ class ModuleService
         $this->security = $security;
     }
 
+    /**
+     * @param Request $request
+     * @return array
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     public function addModule(Request $request): array
     {
         $title = $request->get('title');
@@ -87,5 +104,89 @@ class ModuleService
     public function getUserModules(User $user): ?array
     {
         return $this->moduleRepository->getUserModules($user->getId());
+    }
+
+    /**
+     * Возвращает массив контентов модулей с подставленными данными из request
+     * @param Request $request
+     * @return array
+     */
+    public function getUserModuleContents(Request $request): array
+    {
+        $result = [];
+
+        foreach ($this->getUserModules($this->security->getUser()) as $module) {
+            $content = $this->parseModuleContent($request, $module->getContent());
+
+            $result[] = $content;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Заменяет плейсхолдеры на данные из request
+     * @param Request $request
+     * @param string $content
+     * @return string
+     */
+    public function parseModuleContent(Request $request, string $content): string
+    {
+        $regPlaceholder = '/{{([\s\S]+?)}}/';
+
+        $content = preg_replace_callback($regPlaceholder, function ($matches) use ($request){
+
+            $matches[1] = $this->getPlaceholder($request, trim($matches[1]));
+
+            return $matches[1];
+        }, $content);
+
+        return $content;
+    }
+
+    /**
+     * По плейсхолдеру возвращает данные из request
+     * @param Request $request
+     * @param string $placeholder
+     * @return string
+     */
+    public function getPlaceholder(Request $request, string $placeholder): string
+    {
+        $data = $request->request->all();
+
+        switch ($placeholder) {
+            case (strpos($placeholder, 'keyword')):
+                preg_match('/keyword\|morph\([0-6]\)/', $placeholder, $matches);
+                if (!empty($matches[0])) {
+                    preg_match('/\d/', $matches[0], $number);
+                    $number = $number[0];
+                    $key = self::WORDCASE[$number];
+
+                    return (!empty($data[$key])) ? $data[$key] : '';
+                }
+                return (!empty($data['article_word_nominative_case'])) ? $data['article_word_nominative_case'] : '';
+                break;
+            case 'title':
+                return (!empty($data['articte_title'])) ? $data['articte_title'] : '';
+                break;
+            case 'paragraph':
+                return self::PARAGRAPH;
+                break;
+            case 'paragraphs':
+                $result = '';
+                $count = rand(2, 5);
+                for ($i = 1; $i <= $count; $i++) {
+                    $result .= '<p>' . self::PARAGRAPH .  '</p>';
+                }
+                return $result;
+                break;
+            case 'imageSrc':
+                return '<img class="mr-3" src="/uploads/images/themes/food1.jpg" width="250" height="250" alt="">';
+                break;
+            default:
+                return '';
+                break;
+
+        }
     }
 }

@@ -48,34 +48,24 @@ class ModuleRepository extends ServiceEntityRepository
         }
     }
 
-     /**
-      * @return Module[] Returns an array of Module objects
-      */
-    public function findByExampleField($value)
+    /**
+     * @param $userId
+     * @return array|null
+     */
+    public function getUserModules($userId): ?array
     {
         return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('m.id', 'ASC')
-            ->setMaxResults(10)
+            ->where('m.user = :user_id')
+            ->setParameter('user_id', $userId)
             ->getQuery()
             ->getResult()
         ;
     }
 
-    public function findOneBySomeField($value): ?Module
+    public function getUserModulesContents($userId): ?array
     {
         return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-
-    public function getUserModules($userId): ?array
-    {
-        return $this->createQueryBuilder('m')
+            ->select('m.content')
             ->where('m.user = :user_id')
             ->setParameter('user_id', $userId)
             ->getQuery()
