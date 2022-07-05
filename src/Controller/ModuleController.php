@@ -32,7 +32,7 @@ class ModuleController extends AbstractController
      */
     public function addModule(Request $request): Response
     {
-        $data = $this->moduleService->addModule($request);
+        $data = $this->moduleService->addModule($request->request->all());
         $errors = $data['errors'];
 
         foreach ($errors as $error) {
@@ -53,7 +53,7 @@ class ModuleController extends AbstractController
      */
     public function removeModule(Request $request): Response
     {
-        $result = $this->moduleService->removeModule($request);
+        $result = $this->moduleService->removeModule($request->request->all());
         $this->addFlash('delete_module_message', 'Модуль удален');
 
         return $this->redirectToRoute('app_account_modules');

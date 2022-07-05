@@ -53,15 +53,15 @@ class ModuleService
     }
 
     /**
-     * @param Request $request
+     * @param array $data
      * @return array
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function addModule(Request $request): array
+    public function addModule(array $data): array
     {
-        $title = $request->get('title');
-        $content = $request->get('content');
+        $title = $data['title'];
+        $content = $data['content'];
 
         $module = new Module();
         $module->setTitle($title);
@@ -83,14 +83,14 @@ class ModuleService
     }
 
     /**
-     * @param Request $request
+     * @param array $data
      * @return array|null
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function removeModule(Request $request): ?array
+    public function removeModule(array $data): ?array
     {
-        $moduleId = $request->get('module_id');
+        $moduleId = $data['module_id'];
         $module = $this->moduleRepository->find($moduleId);
         $this->moduleRepository->remove($module);
 
@@ -107,16 +107,15 @@ class ModuleService
     }
 
     /**
-     * Возвращает массив контентов модулей с подставленными данными из request
-     * @param Request $request
+     * @param array $data
      * @return array
      */
-    public function getUserModuleContents(Request $request): array
+    public function getUserModuleContents(array $data): array
     {
         $result = [];
 
         foreach ($this->getUserModules($this->security->getUser()) as $module) {
-            $content = $this->parseModuleContent($request, $module->getContent());
+            $content = $this->parseModuleContent($data, $module->getContent());
 
             $result[] = $content;
         }
@@ -125,18 +124,17 @@ class ModuleService
     }
 
     /**
-     * Заменяет плейсхолдеры на данные из request
-     * @param Request $request
+     * @param array $data
      * @param string $content
      * @return string
      */
-    public function parseModuleContent(Request $request, string $content): string
+    public function parseModuleContent(array $data, string $content): string
     {
         $regPlaceholder = '/{{([\s\S]+?)}}/';
 
-        $content = preg_replace_callback($regPlaceholder, function ($matches) use ($request){
+        $content = preg_replace_callback($regPlaceholder, function ($matches) use ($data){
 
-            $matches[1] = $this->getPlaceholder($request, trim($matches[1]));
+            $matches[1] = $this->getPlaceholder($data, trim($matches[1]));
 
             return $matches[1];
         }, $content);
@@ -145,15 +143,12 @@ class ModuleService
     }
 
     /**
-     * По плейсхолдеру возвращает данные из request
-     * @param Request $request
+     * @param array $data
      * @param string $placeholder
      * @return string
      */
-    public function getPlaceholder(Request $request, string $placeholder): string
+    public function getPlaceholder(array $data, string $placeholder): string
     {
-        $data = $request->request->all();
-
         switch ($placeholder) {
             case (strpos($placeholder, 'keyword')):
                 preg_match('/keyword\|morph\([0-6]\)/', $placeholder, $matches);

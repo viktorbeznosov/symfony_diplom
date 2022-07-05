@@ -137,13 +137,12 @@ class ArticleService
     }
 
     /**
-     * @param Request $request
+     * @param array $data
+     * @param array $files
      * @return array
      */
-    public function getArticleData(Request $request): array
+    public function getArticleData(array $data, array $files): array
     {
-        $data = $request->request->all();
-
         $wordsArray = [];
 
         foreach ($data as $key => $item) {
@@ -160,10 +159,9 @@ class ArticleService
             }
         }
 
-        $userModuleContents = $this->moduleService->getUserModuleContents($request);
+        $userModuleContents = $this->moduleService->getUserModuleContents($data);
 
-        $files = $request->files->all();
-        $content = $this->insertWords($this->themeDBService->getThemeContent($request->request->get('theme_code')), $wordsArray);
+        $content = $this->insertWords($this->themeDBService->getThemeContent($data['theme_code']), $wordsArray);
         $content = $this->insertImages($content, $files);
         $content = $this->insertModules($content, $userModuleContents);
 
@@ -175,13 +173,14 @@ class ArticleService
     }
 
     /**
-     * @param Request $request
+     * @param array $data
+     * @param array $files
      * @return Article
      * @throws \Exception
      */
-    public function createArticle(Request $request): Article
+    public function createArticle(array $data, array $files): Article
     {
-        $articleData = $this->getArticleData($request);
+        $articleData = $this->getArticleData($data, $files);
         $article = new Article();
 
         $article->setUser($this->security->getUser());
