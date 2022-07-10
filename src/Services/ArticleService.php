@@ -45,6 +45,10 @@ class ArticleService
      * @var WordsService
      */
     private $wordsService;
+    /**
+     * @var ModuleService
+     */
+    private $moduleService;
 
     /**
      * ArticleService constructor.
@@ -55,7 +59,8 @@ class ArticleService
         ArticleRepository $articleRepository,
         EntityManagerInterface $entityManager,
         Security $security,
-        WordsService $wordsService
+        WordsService $wordsService,
+        ModuleService $moduleService
     )
     {
         $this->themeDBService = $themeDBService;
@@ -64,14 +69,25 @@ class ArticleService
         $this->entityManager = $entityManager;
         $this->articleRepository = $articleRepository;
         $this->wordsService = $wordsService;
+        $this->moduleService = $moduleService;
     }
 
-    public function insertWords($content, $wordsArray = [])
+    /**
+     * @param $content
+     * @param array $wordsArray
+     * @return string
+     */
+    public function insertWords($content, $wordsArray = []): string
     {
         return $this->wordsService->insertWords($content, $wordsArray);
     }
 
-    public function insertImages($content, $files = [])
+    /**
+     * @param $content
+     * @param array $files
+     * @return string
+     */
+    public function insertImages($content, $files = []): string
     {
         $imdSources = array();
 
@@ -102,10 +118,31 @@ class ArticleService
         return $pq->html();
     }
 
-    public function getArticleData(Request $request)
+    /**
+     * @param $content
+     * @param $moduleContents
+     * @return string
+     */
+    public function insertModules($content, $moduleContents): string
     {
-        $data = $request->request->all();
+        $pq = phpQuery::newDocument($content);
+        $contentBlocks = $pq->find(':root')->find('.col-xl-12')->children();
+        $contentBlocksCount = $contentBlocks->count();
 
+        foreach ($moduleContents as $content) {
+            pq($contentBlocks)->eq(rand(1, $contentBlocksCount - 1))->append($content);
+        }
+
+        return $pq->html();
+    }
+
+    /**
+     * @param array $data
+     * @param array $files
+     * @return array
+     */
+    public function getArticleData(array $data, array $files): array
+    {
         $wordsArray = [];
 
         foreach ($data as $key => $item) {
@@ -122,9 +159,11 @@ class ArticleService
             }
         }
 
-        $files = $request->files->all();
-        $content = $this->insertWords($this->themeDBService->getThemeContent($request->request->get('theme_code')), $wordsArray);
+        $userModuleContents = $this->moduleService->getUserModuleContents($data);
+
+        $content = $this->insertWords($this->themeDBService->getThemeContent($data['theme_code']), $wordsArray);
         $content = $this->insertImages($content, $files);
+        $content = $this->insertModules($content, $userModuleContents);
 
         return [
             'data' => $data,
@@ -133,9 +172,15 @@ class ArticleService
         ];
     }
 
-    public function createArticle(Request $request)
+    /**
+     * @param array $data
+     * @param array $files
+     * @return Article
+     * @throws \Exception
+     */
+    public function createArticle(array $data, array $files): Article
     {
-        $articleData = $this->getArticleData($request);
+        $articleData = $this->getArticleData($data, $files);
         $article = new Article();
 
         $article->setUser($this->security->getUser());
@@ -160,6 +205,11 @@ class ArticleService
         return $article;
     }
 
+    /**
+     * @param Request $request
+     * @param PaginatorInterface $paginator
+     * @return \Knp\Component\Pager\Pagination\PaginationInterface
+     */
     public function getArticlesHistory(
         Request $request,
         PaginatorInterface $paginator
@@ -178,18 +228,28 @@ class ArticleService
         return $pagination;
     }
 
+    /**
+     * @return string|null
+     */
     public function getArticleToken(): ?string
     {
         return Request::createFromGlobals()->cookies->get('article_token');
     }
 
-    public function getArticleByToken(string $token)
+    /**
+     * @param string $token
+     * @return Article
+     */
+    public function getArticleByToken(string $token): Article
     {
         $article = $this->articleRepository->findOneBy(['token' =>  $token]);
 
         return $article;
     }
 
+    /**
+     * @param User $user
+     */
     public function bindDemoArticleToUser(User $user)
     {
         $articleToken = $this->getArticleToken();
@@ -206,11 +266,19 @@ class ArticleService
         }
     }
 
+    /**
+     * @param User $user
+     * @return mixed[]
+     */
     public function getUserArticles(User $user)
     {
         return $this->articleRepository->getUserArticles($user->getId());
     }
 
+    /**
+     * @param User $user
+     * @return mixed[]
+     */
     public function getUserArticlesByLastMonth(User $user)
     {
         return $this->articleRepository->getUserArticlesByPeriod($user->getId(), Carbon::now()->modify('-1 month'), Carbon::now());

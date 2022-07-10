@@ -55,7 +55,7 @@ class ArticleController extends AbstractController
         Security $security
     )
     {
-        $article = ($request->cookies->get('article_token')) ? $articleService->getArticleByToken($request->cookies->get('article_token')) : $articleService->createArticle($request);
+        $article = ($request->cookies->get('article_token')) ? $articleService->getArticleByToken($request->cookies->get('article_token')) : $articleService->createArticle($request->request->all(), $request->files->all());
 
         $response = new Response();
         $response->headers->setCookie(Cookie::create('article_token', $article->getToken()));
