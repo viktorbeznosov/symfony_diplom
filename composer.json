@@ -49,8 +49,6 @@
     "symfony/yaml": "5.3.*",
     "twig/extra-bundle": "^2.12|^3.0",
     "twig/twig": "^2.12|^3.0",
-    "viktor/theme-nature-service-bundle": "dev-master",
-    "viktor/theme-programming-service-bundle": "dev-master",
     "viktorbeznosov/theme-nature-service-bundle": "dev-master",
     "viktorbeznosov/theme-programming-service-bundle": "dev-master",
     "zircote/swagger-php": "^3.2"
@@ -67,7 +65,11 @@
     "preferred-install": {
       "*": "dist"
     },
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "symfony/flex": true,
+      "symfony/runtime": true
+    }
   },
   "autoload": {
     "psr-4": {
