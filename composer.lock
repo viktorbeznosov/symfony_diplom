@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b414f0cda6b0039578f3c40a0d10fe04",
+    "content-hash": "73b734cedf58c6ab32576e04581b2672",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -7688,6 +7688,84 @@
             }
         },
         {
+            "name": "viktorbeznosov/theme-nature-service-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/viktorbeznosov/theme-nature-service-bundle.git",
+                "reference": "0359c690e50afd54e39af28379a05109e01f8421"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/viktorbeznosov/theme-nature-service-bundle/zipball/0359c690e50afd54e39af28379a05109e01f8421",
+                "reference": "0359c690e50afd54e39af28379a05109e01f8421",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2.5"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "SymfonyDiplom\\ThemeNatureServiceBundle\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "viktorbeznosov",
+                    "email": "viktorbeznosov@mail.ru"
+                }
+            ],
+            "description": "Статья о природе",
+            "support": {
+                "source": "https://github.com/viktorbeznosov/theme-nature-service-bundle/tree/master",
+                "issues": "https://github.com/viktorbeznosov/theme-nature-service-bundle/issues"
+            },
+            "time": "2022-10-02T13:37:32+00:00"
+        },
+        {
+            "name": "viktorbeznosov/theme-programming-service-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/viktorbeznosov/theme-programming-service-bundle.git",
+                "reference": "6873d65d001fd9b23ad10b5194145637a7b6aaca"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/viktorbeznosov/theme-programming-service-bundle/zipball/6873d65d001fd9b23ad10b5194145637a7b6aaca",
+                "reference": "6873d65d001fd9b23ad10b5194145637a7b6aaca",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2.5"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "SymfonyDiplom\\ThemeProgrammingServiceBundle\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "viktorbeznosov",
+                    "email": "viktorbeznosov@mail.ru"
+                }
+            ],
+            "description": "Статья о прогораммировании",
+            "support": {
+                "source": "https://github.com/viktorbeznosov/theme-programming-service-bundle/tree/master",
+                "issues": "https://github.com/viktorbeznosov/theme-programming-service-bundle/issues"
+            },
+            "time": "2022-10-02T13:42:10+00:00"
+        },
+        {
             "name": "zircote/swagger-php",
             "version": "3.3.6",
             "source": {
@@ -8208,7 +8286,9 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "viktor/theme-nature-service-bundle": 20,
-        "viktor/theme-programming-service-bundle": 20
+        "viktor/theme-programming-service-bundle": 20,
+        "viktorbeznosov/theme-nature-service-bundle": 20,
+        "viktorbeznosov/theme-programming-service-bundle": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

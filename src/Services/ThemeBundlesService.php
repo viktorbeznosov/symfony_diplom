@@ -36,6 +36,13 @@ class ThemeBundlesService implements ThemeServiceInterface
         }
 
         foreach (scandir($this->themesPath) as $dir) {
+            $dirArr = explode('-', $dir);
+
+            $dirArr = array_map(function ($imem){
+                return ucfirst($imem);
+            }, $dirArr);
+
+            $dir = implode('', $dirArr);
             $file = str_replace('Bundle', '', $dir);
 
             if (class_exists($this->nameSpase . $dir . '\\' . $file)) {

@@ -6,11 +6,11 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/viktorbeznosov/theme-nature-service-bundle"
+      "url": "https://github.com/viktorbeznosov/theme-nature-service-bundle.git"
     },
     {
       "type": "vcs",
-      "url": "https://github.com/viktorbeznosov/theme-programming-service-bundle"
+      "url": "https://github.com/viktorbeznosov/theme-programming-service-bundle.git"
     }
   ],
   "require": {
@@ -51,6 +51,8 @@
     "twig/twig": "^2.12|^3.0",
     "viktor/theme-nature-service-bundle": "dev-master",
     "viktor/theme-programming-service-bundle": "dev-master",
+    "viktorbeznosov/theme-nature-service-bundle": "dev-master",
+    "viktorbeznosov/theme-programming-service-bundle": "dev-master",
     "zircote/swagger-php": "^3.2"
   },
   "require-dev": {

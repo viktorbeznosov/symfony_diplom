@@ -168,7 +168,6 @@ class ArticleService
         $userModuleContents = $this->moduleService->getUserModuleContents($data);
 
         $content = $this->themeDBService->getThemeContent($data['theme_code']) ?? $this->themeBundlesService->getThemeContent($data['theme_code']);
-print_r($content);die();
         $content = $this->insertWords($content, $wordsArray);
         $content = $this->insertImages($content, $files);
         $content = $this->insertModules($content, $userModuleContents);
