@@ -49,12 +49,17 @@ class ArticleService
      * @var ModuleService
      */
     private $moduleService;
+    /**
+     * @var ThemeBundlesService
+     */
+    private $themeBundlesService;
 
     /**
      * ArticleService constructor.
      */
     public function __construct(
-        ThemeDBService $themeDBService,
+        ThemeServiceInterface $themeDBService,
+        ThemeServiceInterface $themeBundlesService,
         ThemeRepository $themeRepository,
         ArticleRepository $articleRepository,
         EntityManagerInterface $entityManager,
@@ -70,6 +75,7 @@ class ArticleService
         $this->articleRepository = $articleRepository;
         $this->wordsService = $wordsService;
         $this->moduleService = $moduleService;
+        $this->themeBundlesService = $themeBundlesService;
     }
 
     /**
@@ -161,7 +167,9 @@ class ArticleService
 
         $userModuleContents = $this->moduleService->getUserModuleContents($data);
 
-        $content = $this->insertWords($this->themeDBService->getThemeContent($data['theme_code']), $wordsArray);
+        $content = $this->themeDBService->getThemeContent($data['theme_code']) ?? $this->themeBundlesService->getThemeContent($data['theme_code']);
+print_r($content);die();
+        $content = $this->insertWords($content, $wordsArray);
         $content = $this->insertImages($content, $files);
         $content = $this->insertModules($content, $userModuleContents);
 
@@ -191,7 +199,7 @@ class ArticleService
         $articleMaxSize = isset($articleData['data']['max_size']) ? intval($articleData['data']['max_size']) : 1;
 
         $theme = $this->themeRepository->findOneBy(['code' => $articleData['data']['theme_code']]);
-        $article->setTheme($theme);
+        $article->setCode($articleData['data']['theme_code']);
         $article->setTitle($articleData['data']['articte_title']);
         $article->setDescription($articleDescription);
         $article->setContent($articleData['content']);

@@ -25,5 +25,13 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    App\Servises\ThemeDBService:
+    App\Services\ThemeDBService:
         autowire: true
+    App\Services\ThemeBundlesService:
+        autowire: true
+
+    App\Services\ThemeServiceInterface $themeDBService: '@App\Services\ThemeDBService'
+    App\Services\ThemeServiceInterface: '@App\Services\ThemeBundlesService'
+
+    SymfonyDiplom\ThemeProgrammingServiceBundle\ThemeProgrammingService: null
+    SymfonyDiplom\ThemeNatureServiceBundle\ThemeNatureService: null

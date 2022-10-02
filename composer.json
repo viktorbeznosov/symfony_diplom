@@ -3,6 +3,16 @@
   "license": "proprietary",
   "minimum-stability": "stable",
   "prefer-stable": true,
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/viktorbeznosov/theme-nature-service-bundle"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/viktorbeznosov/theme-programming-service-bundle"
+    }
+  ],
   "require": {
     "php": ">=7.2.5",
     "ext-ctype": "*",
@@ -39,6 +49,8 @@
     "symfony/yaml": "5.3.*",
     "twig/extra-bundle": "^2.12|^3.0",
     "twig/twig": "^2.12|^3.0",
+    "viktor/theme-nature-service-bundle": "dev-master",
+    "viktor/theme-programming-service-bundle": "dev-master",
     "zircote/swagger-php": "^3.2"
   },
   "require-dev": {

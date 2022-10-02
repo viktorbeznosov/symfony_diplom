@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fd0d550f43acfa6c54bdde6d2d541e13",
+    "content-hash": "b414f0cda6b0039578f3c40a0d10fe04",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -2503,6 +2503,7 @@
             "keywords": [
                 "diff"
             ],
+            "abandoned": true,
             "time": "2020-10-14T08:39:05+00:00"
         },
         {
@@ -7625,6 +7626,68 @@
             "time": "2022-05-17T05:48:52+00:00"
         },
         {
+            "name": "viktor/theme-nature-service-bundle",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "lib/ThemeNatureServiceBundle",
+                "reference": "c00ca63d0647edce4901dacee457daaa604a233f"
+            },
+            "require": {
+                "php": "^7.2.5"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "SymfonyDiplom\\ThemeNatureServiceBundle\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "viktorbeznosov",
+                    "email": "viktorbeznosov@mail.ru"
+                }
+            ],
+            "description": "Статья о природе",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "viktor/theme-programming-service-bundle",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "lib/ThemeProgrammingServiceBundle",
+                "reference": "47d1b1e46499f54266851d6cff9e007000125a8d"
+            },
+            "require": {
+                "php": "^7.2.5"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "SymfonyDiplom\\ThemeProgrammingServiceBundle\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "viktorbeznosov",
+                    "email": "viktorbeznosov@mail.ru"
+                }
+            ],
+            "description": "Статья о прогораммировании",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "zircote/swagger-php",
             "version": "3.3.6",
             "source": {
@@ -8143,7 +8206,10 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "viktor/theme-nature-service-bundle": 20,
+        "viktor/theme-programming-service-bundle": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

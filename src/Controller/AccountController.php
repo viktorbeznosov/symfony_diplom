@@ -10,6 +10,7 @@ use App\Repository\ThemeRepository;
 use App\Services\ArticleService;
 use App\Services\ModuleService;
 use App\Services\SubscribeService;
+use App\Services\ThemeBundlesService;
 use App\Services\ThemeDBService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -49,10 +50,14 @@ class AccountController extends AbstractController
      * @Route("/account/article_create", name="app_account_article_create")
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function create(ThemeRepository $repository, ThemeDBService $themeService): Response
+    public function create(
+        ThemeRepository $repository,
+        ThemeDBService $themeService,
+        ThemeBundlesService $themeBundlesService
+    ): Response
     {
         return $this->render('account/create.html.twig', [
-            'themes' => $themeService->getThemes(),
+            'themes' => array_merge($themeService->getThemes(), $themeBundlesService->getThemes()),
         ]);
     }
 
