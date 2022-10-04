@@ -531,6 +531,18 @@
     "twig/twig": {
         "version": "v3.3.3"
     },
+    "viktor/theme-nature-service-bundle": {
+        "version": "dev-master"
+    },
+    "viktor/theme-programming-service-bundle": {
+        "version": "dev-master"
+    },
+    "viktorbeznosov/theme-nature-service-bundle": {
+        "version": "dev-master"
+    },
+    "viktorbeznosov/theme-programming-service-bundle": {
+        "version": "dev-master"
+    },
     "zircote/swagger-php": {
         "version": "3.2.3"
     }

@@ -28,13 +28,6 @@ class Article
     private $title;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Theme::class, inversedBy="articles")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $theme;
-
-
-    /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="yes")
      * @ORM\JoinColumn(nullable=true)
      */
@@ -72,6 +65,11 @@ class Article
      */
     private $created_at;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $code;
+
     public function __construct()
     {
 
@@ -90,18 +88,6 @@ class Article
     public function setTitle(string $title): self
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    public function getTheme(): ?Theme
-    {
-        return $this->theme;
-    }
-
-    public function setTheme(?Theme $theme): self
-    {
-        $this->theme = $theme;
 
         return $this;
     }
@@ -186,6 +172,18 @@ class Article
     public function setCreatedAt(\DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): self
+    {
+        $this->code = $code;
 
         return $this;
     }

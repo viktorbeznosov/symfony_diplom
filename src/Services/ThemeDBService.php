@@ -55,6 +55,6 @@ class ThemeDBService implements ThemeServiceInterface
     {
         $article = $this->themeRepository->findOneBy(['code' => $code]);
 
-        return $article->getContent();
+        return !empty($article) ? $article->getContent() : null;
     }
 }
