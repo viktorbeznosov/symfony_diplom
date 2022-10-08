@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Carbon\Carbon;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -308,6 +309,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function daysLeftToExpireSubscribe(): ?int
+    {
+        if (empty($this->getSubscribeIssuedTill())) {
+            return null;
+        }
+        $sign = Carbon::now() > Carbon::create($this->getSubscribeIssuedTill()) ? -1 : 1;
+
+        return $sign * Carbon::now()->diffInDays(Carbon::create($this->getSubscribeIssuedTill()));
+    }
+
     /**
      * @return Collection<int, Module>
      */
@@ -336,6 +347,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function isAdmin()
+    {
+        return in_array('ROLE_ADMIN', $this->getRoles());
     }
 
 }

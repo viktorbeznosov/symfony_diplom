@@ -6,25 +6,27 @@
         <div class="row">
 
             <div class="col-xl-6">
+                {% if (is_granted('CAN_ARTICLE_CREATE') == false) %}
                 <div class="alert alert-danger" role="alert">
-                    Превышен лимит создания статей, чтобы снять лимит <a href="dashboard_subscription.html">Улучшите подписку</a>
+                    Превышен лимит создания статей, чтобы снять лимит <a href="{{ path('app_account_subscribe') }}">Улучшите подписку</a>
                 </div>
+                {% endif %}
                 <form enctype="multipart/form-data" method="post" id="articleCreateForm">
                     <div class="form-group">
                         <label for="fieldTheme">Тематика</label>
-                        <select class="form-control" id="fieldTheme" name="theme_code">
+                        <select class="form-control" id="fieldTheme" name="theme_code" {% if (is_granted('CAN_ARTICLE_CREATE') == false) %} disabled {% endif %}>
                             {% for theme in themes %}
                                 <option value="{{ theme.code }}" data-content="{{ theme.content }}">{{ theme.title }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="form-label-group article-title">
-                        <input type="text" id="articleTitle" class="form-control" name="articte_title" placeholder="Заголовок статьи" required autofocus value="">
+                        <input type="text" id="articleTitle" class="form-control" name="articte_title" placeholder="Заголовок статьи" required autofocus value="" {% if (is_granted('CAN_ARTICLE_CREATE') == false) %} disabled {% endif %}>
                         <label for="articleTitle">Заголовок статьи</label>
                     </div>
 
                     <div class="form-label-group article-title">
-                        <input type="text" id="articleDescription" class="form-control" name="articte_description" placeholder="Описание статьи" required autofocus value="">
+                        <input type="text" id="articleDescription" class="form-control" name="articte_description" placeholder="Описание статьи" required autofocus value="" {% if (is_granted('CAN_ARTICLE_CREATE') == false) %} disabled {% endif %}>
                         <label for="articleDescription">Описание статьи</label>
                     </div>
 
@@ -32,62 +34,65 @@
                         <div class="card-body">
                             <p class="card-title">Ключевое слово</p>
                             <div class="form-label-group">
-                                <input type="text" id="articleWordNominativeCase" name="article_word_nominative_case" class="form-control" placeholder="Ключевое слово" required value="">
+                                <input type="text" id="articleWordNominativeCase" name="article_word_nominative_case" class="form-control" placeholder="Ключевое слово" required value="" {% if (is_granted('CAN_ARTICLE_CREATE') == false) %} disabled {% endif %}>
                                 <label for="articleWordNominativeCase">Ключевое слово</label>
                             </div>
                             <div class="form-label-group">
-                                <input type="text" id="articleWordGenitiveCase" name="article_word_genitive_case" class="form-control" placeholder="Родительный падеж" required value="">
+                                <input type="text" id="articleWordGenitiveCase" name="article_word_genitive_case" class="form-control" placeholder="Родительный падеж" required value="" {% if (is_granted('CAN_ARTICLE_CREATE') == false) %} disabled {% endif %}>
                                 <label for="articleWordGenitiveCase">Родительный падеж</label>
                             </div>
                             <div class="form-label-group">
-                                <input type="text" id="articleWordDativeCase" name="article_word_dative_case" class="form-control" placeholder="Родительный падеж" required value="">
+                                <input type="text" id="articleWordDativeCase" name="article_word_dative_case" class="form-control" placeholder="Родительный падеж" required value="" {% if (is_granted('CAN_ARTICLE_CREATE') == false) %} disabled {% endif %}>
                                 <label for="articleWordDativeCase">Дательный падеж</label>
                             </div>
                             <div class="form-label-group">
-                                <input type="text" id="articleWordAccusativeCase" name="article_word_accusative_case" class="form-control" placeholder="Родительный падеж" required value="">
+                                <input type="text" id="articleWordAccusativeCase" name="article_word_accusative_case" class="form-control" placeholder="Родительный падеж" required value="" {% if (is_granted('CAN_ARTICLE_CREATE') == false) %} disabled {% endif %}>
                                 <label for="articleWordAccusativeCase">Винительный падеж</label>
                             </div>
                             <div class="form-label-group">
-                                <input type="text" id="articleWordCreativeCase" name="article_word_creative_case" class="form-control" placeholder="Родительный падеж" required value="">
+                                <input type="text" id="articleWordCreativeCase" name="article_word_creative_case" class="form-control" placeholder="Родительный падеж" required value="" {% if (is_granted('CAN_ARTICLE_CREATE') == false) %} disabled {% endif %}>
                                 <label for="articleWordCreativeCase">Творительный падеж</label>
                             </div>
                             <div class="form-label-group">
-                                <input type="text" id="articleWordPrepositionalCase" name="article_word_prepositional_case" class="form-control" placeholder="Родительный падеж" required value="">
+                                <input type="text" id="articleWordPrepositionalCase" name="article_word_prepositional_case" class="form-control" placeholder="Родительный падеж" required value="" {% if (is_granted('CAN_ARTICLE_CREATE') == false) %} disabled {% endif %}>
                                 <label for="articleWordPrepositionalCase">Предложный падеж</label>
                             </div>
 
                             <div class="form-label-group">
-                                <input type="text" id="articleWordPlural" name="article_word_plural" class="form-control" placeholder="Множественное число" required value="">
+                                <input type="text" id="articleWordPlural" name="article_word_plural" class="form-control" placeholder="Множественное число" required value="" {% if (is_granted('CAN_ARTICLE_CREATE') == false) %} disabled {% endif %}>
                                 <label for="articleWordPlural">Множественное число</label>
                             </div>
                         </div>
                     </div>
 
+
                     <div class="row">
                         <div class="col">
                             <div class="form-label-group">
-                                <input type="number" id="sizeFromField" min="1" class="form-control" name="min_size" placeholder="Размер статьи">
+                                <input type="number" id="sizeFromField" min="1" class="form-control" name="min_size" placeholder="Размер статьи" {% if (is_granted('CAN_ARTICLE_CREATE') == false) %} disabled {% endif %}>
                                 <label for="sizeFromField">Размер статьи от</label>
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-label-group">
-                                <input type="number" id="sizeToField" min="1" class="form-control" name="max_size" placeholder="До">
+                                <input type="number" id="sizeToField" min="1" class="form-control" name="max_size" placeholder="До" {% if (is_granted('CAN_ARTICLE_CREATE') == false) %} disabled {% endif %}>
                                 <label for="sizeToField">До</label>
                             </div>
                         </div>
                     </div>
 
 
+                    {% if (is_granted('PLUS')) %}
                     <div class="card mb-4">
                         <div class="card-body">
                             <p class="card-title">Продвигаемые слова</p>
                             <div class="promoted-words">
 
                             </div>
-                            <button type="button" class="btn btn-success btn-round-lg btn-lg promoted-word-add bth-rounded"><i class="fas fa-plus" aria-hidden="true" title="Добавить продвигаемое слово"></i></button>
+                            <button type="button" class="btn btn-success btn-round-lg btn-lg promoted-word-add bth-rounded" {% if (is_granted('CAN_ARTICLE_CREATE') == false) %} disabled {% endif %}><i class="fas fa-plus" aria-hidden="true" title="Добавить продвигаемое слово"></i></button>
                         </div>
                     </div>
+                    {% endif %}
 
                     <div class="file-upload">
                         <div class="file-select">
@@ -95,11 +100,12 @@
                                 <i class="fas fa-paperclip" aria-hidden="true"></i>
                             </div>
                             <div class="file-select-name" id="noFile">Не выбраны изображения...</div>
-                            <input type="file" name="artcle_imeges[]" id="chooseFile" multiple>
+                            <input type="file" name="artcle_imeges[]" id="chooseFile" multiple {% if (is_granted('CAN_ARTICLE_CREATE') == false) %} disabled {% endif %}>
                         </div>
                     </div>
 
-                    <button class="btn btn-lg btn-primary btn-block text-uppercase create-article" type="submit">Создать</button>
+
+                    <button class="btn btn-lg btn-primary btn-block text-uppercase create-article" type="submit" {% if (is_granted('CAN_ARTICLE_CREATE') == false) %} disabled {% endif %}>Создать</button>
                 </form>
             </div>
         </div>
