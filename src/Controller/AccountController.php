@@ -165,6 +165,7 @@ class AccountController extends AbstractController
     /**
      * @Route("/account/modules", name="app_account_modules")
      * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @IsGranted("PRO")
      */
     public function modules(
         Request $request,

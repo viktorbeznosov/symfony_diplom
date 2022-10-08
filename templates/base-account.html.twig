@@ -25,7 +25,9 @@
                     <a href="{{ path("app_account_articles_history") }}" class="list-group-item list-group-item-action  {% if app.request.attributes.get('_route') ==  'app_account_articles_history' %}active{% endif %}">История статей</a>
                     <a href="{{ path("app_account_subscribe") }}" class="list-group-item list-group-item-action {% if app.request.attributes.get('_route') ==  'app_account_subscribe' %}active{% endif %}">Подписка</a>
                     <a href="{{ path("app_account_profile") }}" class="list-group-item list-group-item-action {% if app.request.attributes.get('_route') ==  'app_account_profile' %}active{% endif %}">Профиль</a>
-                    <a href="{{ path("app_account_modules") }}" class="list-group-item list-group-item-action {% if app.request.attributes.get('_route') ==  'app_account_modules' %}active{% endif %}">Модули генератора</a>
+                    {% if (is_granted('PRO')) %}
+                        <a href="{{ path("app_account_modules") }}" class="list-group-item list-group-item-action {% if app.request.attributes.get('_route') ==  'app_account_modules' %}active{% endif %}">Модули генератора</a>
+                    {% endif %}
                 </div>
             </div>
         {% endblock %}
